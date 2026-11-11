@@ -48,6 +48,7 @@ test.describe('core playthrough', () => {
     await expect(page.locator('.room')).toBeVisible();
     await expect(statusLine(page)).not.toHaveText('');
     await expect(page.locator('.entrance-skip')).toBeVisible();
+    expect('DELIBERATELY BROKEN (throwaway CI check)').toBe('green');
   });
 
   test('correct route: First Connection, no crossed lines', async ({ page }) => {
