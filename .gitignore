@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Kiroween requirement: never ignore .kiro or any of its subdirectories.
+.pbt/

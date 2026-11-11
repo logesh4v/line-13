@@ -1,0 +1,17 @@
+{
+  "suite": "@line-13/graph engine properties",
+  "failed": true,
+  "requestedRuns": 300,
+  "numRuns": 64,
+  "numShrinks": 4,
+  "seed": 1,
+  "durationMs": 131,
+  "stats": {
+    "rejected:zero-solution": 38,
+    "rejected:multi-solution": 41,
+    "verified": 13,
+    "rejected:ordering-cycle": 10
+  },
+  "replay": "PBT_SEED=1 PBT_RUNS=300 npm run pbt",
+  "counterexample": "[{\"callers\":2,\"destinations\":3,\"required\":[],\"forbidden\":[[0,2],[1,2]],\"distinct\":[],\"ordering\":[],\"exclusions\":[[0,0],[1,0]]},[]]"
+}

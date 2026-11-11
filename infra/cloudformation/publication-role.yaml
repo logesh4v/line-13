@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  LINE 13 content publication role. Used only by the reviewed, human-approved
+  publication pipeline at build time: Amazon Polly for caller speech, Amazon
+  Bedrock for Amazon Nova drafting, and write access to the content bucket and
+  the episode catalogue. Nothing in the player's path assumes this role, and no
+  request handler can.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: line-13
+    AllowedPattern: '^[a-z][a-z0-9-]{2,31}$'
+
+  EnvironmentName:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, prod]
+
+  ContentBucketArn:
+    Type: String
+    Description: Content bucket ARN from the content-storage stack.
+
+  EpisodeTableArn:
+    Type: String
+    Description: Episode catalogue table ARN from the api stack.
+
+  ReplayTableArn:
+    Type: String
+    Description: Replay table ARN from the api stack.
+
+  PublisherPrincipalArn:
+    Type: String
+    Description: >-
+      The single IAM principal allowed to assume this role, normally a CI OIDC
+      role. A human operator's long-lived user is a poor choice here.
+
+Resources:
+  PublicationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-${EnvironmentName}-publication'
+      Description: Build-time episode publication for LINE 13.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref PublisherPrincipalArn
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: amazon-nova-drafting
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Model access is resource-scoped to Amazon first-party Nova
+              # models. This is requirement R6.1 enforced a second time, in
+              # IAM, so a code change alone cannot reach another provider.
+              - Sid: InvokeAmazonNovaOnly
+                Effect: Allow
+                Action:
+                  - 'bedrock:InvokeModel'
+                Resource:
+                  - !Sub 'arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/amazon.nova-*'
+
+              # Belt and braces for R6.6: an explicit deny on every foundation
+              # model and inference profile outside the Amazon namespace, which
+              # no later Allow can override.
+              - Sid: DenyEveryNonAmazonModel
+                Effect: Deny
+                Action:
+                  - 'bedrock:InvokeModel'
+                  - 'bedrock:InvokeModelWithResponseStream'
+                  - 'bedrock:Converse'
+                  - 'bedrock:ConverseStream'
+                NotResource:
+                  - !Sub 'arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/amazon.*'
+                  - !Sub 'arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*.amazon.*'
+
+              - Sid: DenyModelProvisioningAndMarketplace
+                Effect: Deny
+                Action:
+                  - 'bedrock:CreateFoundationModelAgreement'
+                  - 'bedrock:PutFoundationModelEntitlement'
+                  - 'bedrock:CreateProvisionedModelThroughput'
+                  - 'bedrock:CreateModelCustomizationJob'
+                Resource: '*'
+
+        - PolicyName: polly-caller-speech
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Amazon Polly's synthesis actions take no resource ARN, so this
+              # cannot be narrowed by resource. It is narrowed instead by the
+              # action list, by region, and by the role's single assumable
+              # principal. Lexicon writes are not granted.
+              - Sid: SynthesizeCallerSpeech
+                Effect: Allow
+                Action:
+                  - 'polly:SynthesizeSpeech'
+                  - 'polly:StartSpeechSynthesisTask'
+                  - 'polly:GetSpeechSynthesisTask'
+                  - 'polly:DescribeVoices'
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    'aws:RequestedRegion': !Ref 'AWS::Region'
+
+        - PolicyName: content-write
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Publication writes new, content-addressed keys. Delete is not
+              # granted: a published asset that a manifest references must stay
+              # readable for as long as that manifest is served.
+              - Sid: WriteContentObjects
+                Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                Resource:
+                  - !Sub '${ContentBucketArn}/episodes/*'
+                  - !Sub '${ContentBucketArn}/audio/*'
+                Condition:
+                  StringEquals:
+                    's3:x-amz-server-side-encryption': 'AES256'
+
+              - Sid: ReadBackForVerification
+                Effect: Allow
+                Action:
+                  - 's3:GetObject'
+                Resource:
+                  - !Sub '${ContentBucketArn}/episodes/*'
+                  - !Sub '${ContentBucketArn}/audio/*'
+
+              - Sid: DenyContentDeletion
+                Effect: Deny
+                Action:
+                  - 's3:DeleteObject'
+                  - 's3:DeleteObjectVersion'
+                  - 's3:PutBucketPolicy'
+                  - 's3:PutBucketPublicAccessBlock'
+                Resource:
+                  - !Ref ContentBucketArn
+                  - !Sub '${ContentBucketArn}/*'
+
+        - PolicyName: catalogue-write
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Publishing an episode writes its catalogue row; minting a share
+              # code writes a replay row. Neither is a read-modify-write, and
+              # neither may delete.
+              - Sid: PublishCatalogueRows
+                Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                Resource:
+                  - !Ref EpisodeTableArn
+                  - !Ref ReplayTableArn
+
+Outputs:
+  PublicationRoleArn:
+    Value: !GetAtt PublicationRole.Arn
+    Description: Assume this only from the reviewed publication pipeline.

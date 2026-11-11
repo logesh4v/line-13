@@ -1,0 +1,521 @@
+/*
+ * The haunting, the sigil, the endings and the finish on the glass.
+ *
+ * Everything here answers to game state: the room's data-haunt level (0 quiet,
+ * 1 a voice crossed, 2 LINE 13 listening, 3 speaking, 4 taking the line), the
+ * phase, the camera cue and the ending's transition. Nothing loops without
+ * carrying information, and every effect has a held-motion equivalent at the
+ * bottom of the file.
+ *
+ * Lighting follows the visual reference: warm dark ground, one saturated
+ * light at a time (the lamps), green phosphor reserved for LINE 13.
+ */
+
+:root {
+  --haunt: 0;
+  --bloom: 0 0 28px 6px rgba(243, 155, 36, 0.38);
+}
+
+/* ───────────────────── lamp glow and a new holding lamp ───────────────────── */
+
+.lamp[data-lamp="holding"] {
+  background: var(--lamp-hot);
+  box-shadow: 0 0 14px rgba(243, 155, 36, 0.55), inset 0 0 0 3px var(--lamp-ring);
+}
+
+.lamp[data-lamp="ringing"],
+.lamp[data-lamp="steady"] {
+  box-shadow: var(--bloom), inset 0 0 0 3px var(--lamp-core);
+}
+
+/* The lit jack throws a small pool of amber onto the walnut around it. */
+.jack[data-lamp="ringing"],
+.jack[data-lamp="holding"] {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(243, 155, 36, 0.2), transparent 62%),
+    rgba(32, 20, 11, 0.6);
+}
+
+.jack[data-lamp="flicker"] {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(194, 74, 42, 0.3), transparent 62%),
+    rgba(32, 20, 11, 0.6);
+}
+
+.jack-name {
+  font-family: var(--font-room);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+/* Everything on the board recedes a little while a cord is in the hand. */
+.board[data-sigil="false"] .jack[data-operable="false"][data-plugged="false"] {
+  opacity: 0.86;
+}
+
+/* ───────────────────────── tickets and small keys ───────────────────────── */
+
+.key--small {
+  min-height: 44px;
+  padding: 4px 12px;
+  font-size: 11px;
+}
+
+.ticket-circuits-title {
+  margin: 16px 0 6px;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ticket-ink-soft);
+}
+
+.ticket-circuits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.ticket-circuits li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* ───────────────────────── the room at each haunt level ───────────────────────── */
+
+.room[data-haunt="1"] { --haunt: 0.25; }
+.room[data-haunt="2"] { --haunt: 0.5; }
+.room[data-haunt="3"] { --haunt: 0.75; }
+.room[data-haunt="4"] { --haunt: 1; }
+
+/* A vignette that closes in as the line gets worse. */
+.room::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    transparent calc(78% - var(--haunt) * 34%),
+    rgba(2, 1, 1, calc(0.35 + var(--haunt) * 0.5)) 100%
+  );
+  transition: background 1.2s ease;
+}
+
+/* Interference: scanlines that crawl, only once LINE 13 is listening. */
+.room[data-haunt="2"] .board::before,
+.room[data-haunt="3"] .board::before,
+.room[data-haunt="4"] .board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: calc(var(--haunt) * 0.22);
+  background: repeating-linear-gradient(0deg, rgba(159, 217, 160, 0.5) 0 1px, transparent 1px 4px);
+  mix-blend-mode: screen;
+  animation: interference 0.9s steps(6) infinite;
+}
+
+@keyframes interference {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(8px); }
+}
+
+/* Possession: the phosphor of LINE 13 bleeds into the lamp colours. */
+.room[data-haunt="4"] .lamp[data-lamp="steady"],
+.room[data-haunt="4"] .lamp[data-lamp="holding"] {
+  background: var(--phosphor);
+  box-shadow: 0 0 22px 4px rgba(159, 217, 160, 0.45), inset 0 0 0 3px var(--lamp-core);
+}
+
+.room[data-haunt="3"] .jack-state,
+.room[data-haunt="4"] .jack-state {
+  text-shadow: 1px 0 rgba(194, 74, 42, 0.8), -1px 0 rgba(159, 217, 160, 0.7);
+}
+
+/* Camera cues from the haunting engine. */
+.room[data-camera="jolt"] .board-shell {
+  animation: camera-jolt 0.36s steps(4);
+}
+
+.room[data-camera="pull-back"] .board-shell {
+  animation: camera-pull 1.8s ease;
+}
+
+.room[data-camera="focus-line"] .board {
+  animation: camera-focus 1.2s ease;
+}
+
+@keyframes camera-jolt {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-5px, 3px); }
+  50% { transform: translate(4px, -3px); }
+  75% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes camera-pull {
+  0% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes camera-focus {
+  0% { filter: brightness(1.12); }
+  100% { filter: none; }
+}
+
+/* ─────────────────────────────── the sigil ─────────────────────────────── */
+
+.sigil {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(159, 217, 160, 0.55));
+}
+
+.sigil-stroke {
+  fill: none;
+  stroke: var(--phosphor);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.85;
+  animation: sigil-draw 1.4s ease forwards;
+  animation-delay: var(--d, 0s);
+}
+
+.sigil-stroke--bright {
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.sigil-stroke--ticks {
+  stroke-width: 1;
+}
+
+.sigil-node {
+  fill: var(--lamp-core);
+  stroke: var(--phosphor);
+  stroke-width: 2;
+  opacity: 0;
+  animation: sigil-node 0.6s ease forwards;
+  animation-delay: var(--d, 0s);
+}
+
+.sigil-node--centre {
+  fill: var(--phosphor);
+}
+
+.sigil-seal {
+  fill: none;
+  stroke: var(--lamp-crossed);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+@keyframes sigil-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes sigil-node {
+  to { opacity: 1; }
+}
+
+/* The board dims beneath the figure so the figure is what you read. */
+.board[data-sigil="true"] .jack[data-operable="false"] {
+  opacity: 0.7;
+  transition: opacity 1s ease;
+}
+
+.board[data-sigil="true"] {
+  box-shadow: var(--shadow-board), inset 0 0 120px rgba(159, 217, 160, 0.12);
+  transition: box-shadow 1.4s ease;
+}
+
+.board[data-sigil="true"] .jack[data-jack-kind="line-13"] {
+  border-color: var(--phosphor);
+  box-shadow: 0 0 24px rgba(159, 217, 160, 0.4);
+}
+
+/* ───────────────────────────── the glass readout ───────────────────────────── */
+
+.rail-glass {
+  background: linear-gradient(180deg, rgba(12, 8, 5, 0.2), rgba(12, 8, 5, 0.82));
+}
+
+.subtitle {
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.85);
+}
+
+.rail-glass[data-speaker="line-13"] .subtitle {
+  color: var(--phosphor);
+  text-shadow: 1px 0 rgba(194, 74, 42, 0.7), -1px 0 rgba(159, 217, 160, 0.6);
+}
+
+.rail-glass[data-speaker="line-13"] .subtitle-speaker {
+  color: var(--phosphor);
+}
+
+/* ───────────────────────────── the endings ───────────────────────────── */
+
+.ending {
+  overflow-y: auto;
+  animation: ending-in 2.4s ease both;
+}
+
+.ending[data-transition="connect"] {
+  background: radial-gradient(circle at 50% 38%, rgba(63, 41, 20, 0.96), rgba(3, 3, 5, 0.99));
+}
+
+.ending[data-transition="reverse"] {
+  background: radial-gradient(circle at 50% 38%, rgba(32, 44, 34, 0.96), rgba(3, 3, 5, 0.99));
+  animation-name: ending-reverse;
+}
+
+.ending[data-transition="sever"] {
+  background: radial-gradient(circle at 50% 38%, rgba(48, 16, 12, 0.97), rgba(1, 1, 1, 1));
+  animation-name: ending-sever;
+}
+
+.ending-panel {
+  width: min(44rem, 100%);
+  text-align: center;
+}
+
+.ending-panel h2 {
+  margin: 14px 0 0;
+  font-size: clamp(30px, 5vw, 58px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.ending-panel p {
+  margin: 14px 0 0;
+  font-size: clamp(15px, 1.7vw, 19px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ending-panel .ending-epilogue {
+  font-style: italic;
+  color: var(--ink);
+}
+
+.ending-ledger {
+  margin: 22px 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.ending-ledger li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--brass-dim);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.ending-ledger li[data-reached="true"] {
+  border-color: var(--lamp-live);
+  background: rgba(241, 182, 90, 0.08);
+}
+
+.ending-ledger strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.ending-ledger span {
+  grid-column: 1;
+  color: var(--ink-soft);
+}
+
+.ending-ledger em {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass-lit);
+}
+
+@keyframes ending-in {
+  0% { opacity: 0; filter: brightness(2.2) blur(6px); }
+  100% { opacity: 1; filter: none; }
+}
+
+@keyframes ending-reverse {
+  0% { opacity: 0; filter: hue-rotate(80deg) blur(8px); }
+  60% { opacity: 1; filter: hue-rotate(20deg); }
+  100% { opacity: 1; filter: none; }
+}
+
+@keyframes ending-sever {
+  0% { opacity: 1; filter: brightness(3); }
+  8% { opacity: 0; }
+  40% { opacity: 0; }
+  100% { opacity: 1; filter: none; }
+}
+
+/* ─────────────────────────────── small rooms ─────────────────────────────── */
+
+@media (max-width: 1040px) {
+  .rail {
+    grid-template-rows: auto auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .jack-name {
+    font-size: 11px;
+  }
+
+  .sigil-stroke--ticks {
+    display: none;
+  }
+
+  .ending-ledger li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ending-ledger em {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+/* ───────────────────────────── motion held ───────────────────────────── */
+
+[data-motion="held"] .room::after {
+  transition: none;
+}
+
+[data-motion="held"] .board::before,
+[data-motion="held"] .room[data-camera] .board-shell,
+[data-motion="held"] .room[data-camera] .board {
+  animation: none;
+}
+
+/* The scanlines stay as a still texture: the level is still readable. */
+[data-motion="held"] .room[data-haunt="2"] .board::before,
+[data-motion="held"] .room[data-haunt="3"] .board::before,
+[data-motion="held"] .room[data-haunt="4"] .board::before {
+  animation: none;
+  opacity: calc(var(--haunt) * 0.12);
+}
+
+[data-motion="held"] .sigil-stroke {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+
+[data-motion="held"] .sigil-node {
+  animation: none;
+  opacity: 1;
+}
+
+[data-motion="held"] .ending {
+  animation: none;
+}
+
+[data-motion="held"] .cord[data-taut="true"] .cord-path,
+[data-motion="held"] .board[data-sigil="true"],
+[data-motion="held"] .board[data-sigil="true"] .jack[data-operable="false"] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sigil-stroke {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .sigil-node {
+    animation: none;
+    opacity: 1;
+  }
+
+  .room .board::before,
+  .room .board-shell,
+  .room .board,
+  .ending {
+    animation: none;
+  }
+}
+
+/* ───────────────────────────── high contrast ───────────────────────────── */
+
+[data-contrast="high"] .room::after,
+[data-contrast="high"] .board::before,
+[data-contrast="high"] .jack[data-lamp="ringing"],
+[data-contrast="high"] .jack[data-lamp="holding"],
+[data-contrast="high"] .jack[data-lamp="flicker"] {
+  background: none;
+}
+
+[data-contrast="high"] .room::after {
+  display: none;
+}
+
+[data-contrast="high"] .board::before {
+  display: none;
+}
+
+[data-contrast="high"] .sigil {
+  filter: none;
+}
+
+[data-contrast="high"] .sigil-stroke {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+[data-contrast="high"] .sigil-node {
+  fill: #000000;
+  stroke: #ffffff;
+}
+
+[data-contrast="high"] .cord-path {
+  stroke-width: 6;
+  filter: none;
+}
+
+[data-contrast="high"] .cord-shadow,
+[data-contrast="high"] .cord-weave {
+  display: none;
+}
+
+[data-contrast="high"] .ending-ledger li {
+  border-color: #ffffff;
+}
+
+[data-contrast="high"] .rail-glass,
+[data-contrast="high"] .ending {
+  background: #000000;
+}

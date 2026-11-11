@@ -1,0 +1,21 @@
+{
+  "name": "@line-13/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional AWS extension for LINE 13: read-only daily episode and replay endpoints plus anonymous ending aggregation. Never required for the bundled judge path.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test test/canonical-json.test.ts test/manifest-integrity.test.ts test/validation.test.ts test/get-daily-episode.test.ts test/get-replay.test.ts test/post-ending-report.test.ts test/privacy.test.ts test/publication.test.ts test/provider-policy.test.ts test/infra-policy.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.6"
+  }
+}

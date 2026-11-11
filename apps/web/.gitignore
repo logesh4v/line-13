@@ -1,0 +1,2 @@
+# Output of the dependency-free transpile check (`npm run check:transpile`).
+.transpile-check/

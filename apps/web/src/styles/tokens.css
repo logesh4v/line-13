@@ -1,0 +1,108 @@
+/*
+ * Occult Exchange design tokens, lifted from Direction A of
+ * design/line-13-mockups.html and promoted to production custom properties.
+ *
+ * Black walnut, aged brass, cloth cord, ivory paper, amber lamp, restrained
+ * green phosphor, smoke, deep shadow. No remote font is loaded anywhere: the
+ * stacks below are all locally installed faces with system fallbacks.
+ */
+
+:root {
+  /* Walnut carcass */
+  --walnut-lit: #452b18;
+  --walnut: #1c1009;
+  --walnut-deep: #100a06;
+  --walnut-shadow: #0b0705;
+  --room-back: #090705;
+  --room-front: #160f0a;
+
+  /* Aged brass */
+  --brass: #986432;
+  --brass-lit: #c7904f;
+  --brass-rim: #ae7942;
+  --brass-dim: rgba(232, 187, 112, 0.2);
+  --brass-hair: rgba(241, 182, 90, 0.35);
+
+  /* Lamps */
+  --lamp-dead: #4f3318;
+  --lamp-ring: #9c6c32;
+  --lamp-live: #ffc665;
+  --lamp-hot: #f39b24;
+  --lamp-core: #fff1b0;
+  --lamp-crossed: #c24a2a;
+
+  /* Paper and cord */
+  --ticket: #d8c69c;
+  --ticket-rule: rgba(69, 48, 25, 0.12);
+  --ticket-ink: #2b2114;
+  --ticket-ink-soft: #5d4b30;
+  --cord: #8f1826;
+  --cord-crossed: #d8742c;
+
+  /* Type */
+  --ink: #f5e7c8;
+  --ink-soft: #c8bca8;
+  --accent: #f1b65a;
+  --phosphor: #9fd9a0;
+
+  --font-room: Georgia, "Times New Roman", "Liberation Serif", serif;
+  --font-engraved: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Physical dimensions. Every operable jack clears a 44px touch target. */
+  --jack-min: 56px;
+  --rim: 1px;
+  --radius-board: 20px;
+  --radius-line: 10px;
+  --shadow-board: inset 0 0 0 8px var(--walnut-deep), inset 0 0 0 10px var(--brass),
+    0 35px 90px rgba(0, 0, 0, 0.58);
+  --shadow-paper: 0 30px 70px rgba(0, 0, 0, 0.45);
+  --focus-ring: 0 0 0 3px var(--walnut-deep), 0 0 0 6px var(--lamp-live);
+
+  --beat: 0.2s;
+}
+
+/*
+ * CONTRAST: HIGH.
+ *
+ * Not a filter over the same panel: the gradients, glows and smoke come off,
+ * the brass goes to a hard rim, and every lamp gains an outline so its state
+ * survives without colour fidelity.
+ */
+[data-contrast="high"] {
+  --walnut-lit: #000000;
+  --walnut: #000000;
+  --walnut-deep: #000000;
+  --walnut-shadow: #000000;
+  --room-back: #000000;
+  --room-front: #000000;
+
+  --brass: #ffd27a;
+  --brass-lit: #ffe6b0;
+  --brass-rim: #ffd27a;
+  --brass-dim: #ffd27a;
+  --brass-hair: #ffd27a;
+
+  --lamp-dead: #000000;
+  --lamp-ring: #ffffff;
+  --lamp-live: #ffd34d;
+  --lamp-hot: #ffd34d;
+  --lamp-core: #ffffff;
+  --lamp-crossed: #ff6a3d;
+
+  --ticket: #ffffff;
+  --ticket-rule: transparent;
+  --ticket-ink: #000000;
+  --ticket-ink-soft: #000000;
+  --cord: #ff4d4d;
+  --cord-crossed: #ffa23d;
+
+  --ink: #ffffff;
+  --ink-soft: #ffffff;
+  --accent: #ffd34d;
+  --phosphor: #7dff8a;
+
+  --rim: 2px;
+  --shadow-board: inset 0 0 0 4px #000000, inset 0 0 0 6px var(--brass);
+  --shadow-paper: none;
+  --focus-ring: 0 0 0 3px #000000, 0 0 0 7px #ffffff;
+}

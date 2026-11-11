@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  LINE 13 content storage. One private bucket holding published episode
+  manifests and immutable Amazon Polly audio assets. Nothing here is public:
+  manifests are read server-side by the API, and audio is read by a CloudFront
+  distribution through origin access control.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: line-13
+    AllowedPattern: '^[a-z][a-z0-9-]{2,31}$'
+    Description: Lower-case resource name prefix.
+
+  EnvironmentName:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, prod]
+
+  ReaderDistributionArn:
+    Type: String
+    Default: ''
+    Description: >-
+      Optional CloudFront distribution ARN permitted to read the audio prefix
+      through origin access control. Left empty until the deployment owner
+      creates the distribution; no public access is granted either way.
+
+Conditions:
+  HasReaderDistribution: !Not [!Equals [!Ref ReaderDistributionArn, '']]
+
+Resources:
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub '${ProjectName}-${EnvironmentName}-content-${AWS::AccountId}'
+      # Published content is immutable and append-only: a new episode is a new
+      # key, never an overwrite, so versioning is a safety net rather than the
+      # mechanism.
+      VersioningConfiguration:
+        Status: Enabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+            BucketKeyEnabled: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-noncurrent-manifest-versions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+          - Id: abort-incomplete-uploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+
+  ContentBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ContentBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyPlaintextTransport
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt ContentBucket.Arn
+              - !Sub '${ContentBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': 'false'
+
+          - Sid: DenyUnencryptedUploads
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:PutObject'
+            Resource: !Sub '${ContentBucket.Arn}/*'
+            Condition:
+              StringNotEquals:
+                's3:x-amz-server-side-encryption': 'AES256'
+
+          - !If
+            - HasReaderDistribution
+            - Sid: AllowDistributionToReadAudio
+              Effect: Allow
+              Principal:
+                Service: cloudfront.amazonaws.com
+              Action: 's3:GetObject'
+              Resource: !Sub '${ContentBucket.Arn}/audio/*'
+              Condition:
+                StringEquals:
+                  'AWS:SourceArn': !Ref ReaderDistributionArn
+            - !Ref 'AWS::NoValue'
+
+Outputs:
+  ContentBucketName:
+    Value: !Ref ContentBucket
+    Export:
+      Name: !Sub '${ProjectName}-${EnvironmentName}-content-bucket'
+
+  ContentBucketArn:
+    Value: !GetAtt ContentBucket.Arn
+    Export:
+      Name: !Sub '${ProjectName}-${EnvironmentName}-content-bucket-arn'
+
+  ManifestPrefix:
+    Value: 'episodes/'
+    Description: Prefix the API may read. Audio lives under 'audio/'.

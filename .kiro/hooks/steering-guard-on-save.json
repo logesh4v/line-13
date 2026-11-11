@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Steering guard on save",
+      "description": "Enforces written steering: no injected HTML, no native title tooltips, no emoji icons, no credentials, AWS-only model SDKs.",
+      "trigger": "PostFileSave",
+      "matcher": "^(apps|packages)/[^/]+/src/.*\\.(ts|tsx|css)$",
+      "action": { "type": "command", "command": "node scripts/steering-guard.mjs" },
+      "timeout": 30
+    }
+  ]
+}

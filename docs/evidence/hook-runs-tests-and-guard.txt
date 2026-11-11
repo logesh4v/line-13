@@ -1,0 +1,42 @@
+### test-affected-package hook: PostFileSave packages/graph/src/solve.ts with the PRE-FIX solver (70c1dde)
+HOOK "Steering guard on save" (.kiro/hooks/steering-guard-on-save.json) exit=0
+HOOK "Run tests of the affected package" (.kiro/hooks/test-affected-package.json) exit=1
+  | test-affected: npm test -w packages/graph
+  | # Subtest: shared destination (found by PBT)
+  |     not ok 1 - rejects an episode whose only assignment puts two callers on one destination
+  |         + actual - expected
+  |       name: 'AssertionError'
+  |       expected: 'rejected'
+  |       actual: 'verified'
+  | not ok 8 - shared destination (found by PBT)
+  | # tests 27
+  | # pass 26
+  | # fail 1
+hook-exit=1
+
+### same hook with the FIXED solver
+HOOK "Steering guard on save" (.kiro/hooks/steering-guard-on-save.json) exit=0
+HOOK "Run tests of the affected package" (.kiro/hooks/test-affected-package.json) exit=0
+  | test-affected: npm test -w packages/graph
+  | # tests 27
+  | # pass 27
+  | # fail 0
+hook-exit=0
+
+### steering-guard hook: PostFileSave apps/web/src/__demo__/Bad.tsx
+HOOK "Steering guard on save" (.kiro/hooks/steering-guard-on-save.json) exit=1
+  ! Steering violations (see .kiro/steering/):
+  !   - apps/web/src/__demo__/Bad.tsx:1 no-injected-html: export const Bad = () => <div title="why" dangerouslySetInnerHTML={{ __html: x }}>👻</div>;
+  !   - apps/web/src/__demo__/Bad.tsx:1 no-native-tooltip: export const Bad = () => <div title="why" dangerouslySetInnerHTML={{ __html: x }}>👻</div>;
+  !   - apps/web/src/__demo__/Bad.tsx:1 no-emoji-icon: export const Bad = () => <div title="why" dangerouslySetInnerHTML={{ __html: x }}>👻</div>;
+  | 
+  | 
+  | [output of the second hook, "Run tests of the affected package", trimmed here: npm test -w apps/web ->
+  |  tests 101, pass 99, fail 2: houseRules.test.ts "uses no emoji as an icon" (an emoji reached a component)
+  |  and "renders episode text as text and never as markup" (found dangerouslySetInnerHTML); exit=1]
+hook-exit=1
+
+### same hook, clean file
+HOOK "Steering guard on save" (.kiro/hooks/steering-guard-on-save.json) exit=0
+  | steering-guard: 1 file(s) checked, no violations
+HOOK "Run tests of the affected package" (.kiro/hooks/test-affected-package.json) exit=0

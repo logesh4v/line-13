@@ -1,0 +1,26 @@
+{
+  "name": "line-13",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present && node --test scripts/test/*.test.mjs",
+    "pbt": "npm run pbt -w @line-13/graph && node scripts/pbt-report.mjs",
+    "pbt:report": "node scripts/pbt-report.mjs",
+    "build": "npm run build --workspaces --if-present",
+    "e2e": "npm run e2e -w @line-13/web",
+    "deploy": "node scripts/deploy.mjs",
+    "check:kiro": "node scripts/check-kiro.mjs",
+    "check:episodes": "node scripts/episode-check.mjs",
+    "verify": "npm run lint && npm run check:kiro && npm run typecheck && npm test && npm run pbt && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

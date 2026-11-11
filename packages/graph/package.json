@@ -1,0 +1,21 @@
+{
+  "name": "@line-13/graph",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-free deterministic puzzle truth for LINE 13 episodes.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test test/*.test.ts",
+    "pbt": "node --test test/pbt.property.ts"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "devDependencies": {
+    "fast-check": "4.10.2"
+  }
+}

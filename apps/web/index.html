@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-contrast="lamp" data-motion="full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <style>
+      html,
+      body {
+        background: #090705;
+      }
+    </style>
+    <!-- Without JavaScript the boot plate would wait forever; the noscript note below replaces it. -->
+    <noscript><style>#exchange { display: none; }</style></noscript>
+    <title>LINE 13 — Night Exchange</title>
+    <meta
+      name="description"
+      content="An abandoned 1931 telephone exchange has returned to service. You are the night operator, and the dead are calling."
+    />
+    <!--
+      No remote font, no analytics tag, no third-party script, no model API.
+      Everything this page needs ships in the bundle.
+    -->
+  </head>
+  <body>
+    <!--
+      Static boot plate. It paints with the HTML, before the script has
+      downloaded, so a first-time visitor on a slow connection never sees a
+      blank page. React replaces it on first render.
+    -->
+    <div id="exchange">
+      <p
+        role="status"
+        style="margin: 0; padding: 2rem; color: #f5e7c8; font-family: Georgia, serif; letter-spacing: 0.08em"
+      >
+        LINE 13 — the night exchange is warming up…
+      </p>
+    </div>
+    <noscript>
+      <div style="padding: 2rem; color: #f5e7c8; font-family: Georgia, serif">
+        <h1>LINE 13</h1>
+        <p>
+          The night exchange is a hand-operated switchboard, so it needs JavaScript to carry a
+          call. Enable JavaScript and reload to take the shift.
+        </p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

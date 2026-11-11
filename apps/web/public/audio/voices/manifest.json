@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "engine": "neural",
+  "pipeline": "telephone-2",
+  "lines": {
+    "caller-ruth.open": {
+      "file": "35751755f1f92339288fffaa968afcfd0e5d8326e47b50ff36d2bcdcb32c08b4.mp3",
+      "sha256": "35751755f1f92339288fffaa968afcfd0e5d8326e47b50ff36d2bcdcb32c08b4",
+      "durationMs": 4560,
+      "text": "Operator. Put me where the clock rang after midnight.",
+      "speaker": "caller-ruth",
+      "voiceId": "Joanna",
+      "style": "normal",
+      "inputSha": "9da206258379b4334c731cfc06a017933c866c16cabfd0a541437a6b78424503"
+    },
+    "clue-ruth-clock": {
+      "file": "5ae69d548b86b2afda4304230a0a3e01612b5d7a66a3d1e4f3e541842944745f.mp3",
+      "sha256": "5ae69d548b86b2afda4304230a0a3e01612b5d7a66a3d1e4f3e541842944745f",
+      "durationMs": 2832,
+      "text": "Put me where the clock rang after midnight.",
+      "speaker": "caller-ruth",
+      "voiceId": "Joanna",
+      "style": "normal",
+      "inputSha": "a2d14e1ebbc8680203ba6f6e0fddcd1f15e352feb31b09cc0b078e50f6533d45"
+    },
+    "clue-ruth-orchard": {
+      "file": "a537d216f31b91186d0876d6a61be6faa0828de982421a8be0f5fe085fb303e9.mp3",
+      "sha256": "a537d216f31b91186d0876d6a61be6faa0828de982421a8be0f5fe085fb303e9",
+      "durationMs": 5424,
+      "text": "Do not place me beside the orchard. Something there has learned my voice.",
+      "speaker": "caller-ruth",
+      "voiceId": "Joanna",
+      "style": "normal",
+      "inputSha": "8e154b982289678f41f1247692152fbce77d3f8836bd1649474d74a1b34c0d97"
+    },
+    "clue-ruth-indoors": {
+      "file": "4a779054c679edec268805b0547add9d39ad9ebd00415b49b43cc01a2ac89e0d.mp3",
+      "sha256": "4a779054c679edec268805b0547add9d39ad9ebd00415b49b43cc01a2ac89e0d",
+      "durationMs": 6096,
+      "text": "I did not die indoors, operator. Do not file me with the cold ones.",
+      "speaker": "caller-ruth",
+      "voiceId": "Joanna",
+      "style": "whisper",
+      "inputSha": "1980cf1001890138063b5e2d4d8fa9c6ec5ef58a0d6e1791a1fb1a4ba51134de"
+    },
+    "caller-amos.open": {
+      "file": "0baa3ff5531529ea387bd921ca5de28c3ac6efbbfc0ed0d64362d2d7128f5231.mp3",
+      "sha256": "0baa3ff5531529ea387bd921ca5de28c3ac6efbbfc0ed0d64362d2d7128f5231",
+      "durationMs": 7296,
+      "text": "Operator. Forty winters I dug that hill. Find me a place where the ground is mine.",
+      "speaker": "caller-amos",
+      "voiceId": "Arthur",
+      "style": "normal",
+      "inputSha": "38595afeaaf8a3b057bb80c3f142a343c7a87ed6053c970be7ecde3378b5d2ef"
+    },
+    "clue-amos-ground": {
+      "file": "a648db4987062d8918a6aa2538764c02b3ae06e4063cec97fce95793bda758a9.mp3",
+      "sha256": "a648db4987062d8918a6aa2538764c02b3ae06e4063cec97fce95793bda758a9",
+      "durationMs": 6120,
+      "text": "Forty winters on that hill, operator. I want the ground, not a roof over me.",
+      "speaker": "caller-amos",
+      "voiceId": "Arthur",
+      "style": "normal",
+      "inputSha": "ca023b14a81a0c450eb7419bc3e41d704dde917c4be52308e703f86563a1a9a1"
+    },
+    "clue-amos-cold": {
+      "file": "8203b16896150bda40691af7dd0001c3669cb9577d9afa86183ad583580b9357.mp3",
+      "sha256": "8203b16896150bda40691af7dd0001c3669cb9577d9afa86183ad583580b9357",
+      "durationMs": 5472,
+      "text": "No cold drawers, no standing water, and the chapel door was always shut to me.",
+      "speaker": "caller-amos",
+      "voiceId": "Arthur",
+      "style": "normal",
+      "inputSha": "9aa8c42e7677a9f3e6444fc77a1e247ed913a1a4210027a608c466444093a287"
+    },
+    "clue-amos-tower": {
+      "file": "4f2c85da14cb9dc8785180a6aa8b31cde889eee9c6718498ee9e063cb3594f9a.mp3",
+      "sha256": "4f2c85da14cb9dc8785180a6aa8b31cde889eee9c6718498ee9e063cb3594f9a",
+      "durationMs": 5304,
+      "text": "The bell tower belongs to Ruth Bell. Leave me the apple trees.",
+      "speaker": "caller-amos",
+      "voiceId": "Arthur",
+      "style": "whisper",
+      "inputSha": "237781c92de414d33d6ed8bbf129f7bde3d34f3a9affebb3b5bda127c299dc19"
+    },
+    "caller-tobias.open": {
+      "file": "c04d54e6381234c6c6e5f2818e8df3cd682e8042452497bb86ff7640d018e53e.mp3",
+      "sha256": "c04d54e6381234c6c6e5f2818e8df3cd682e8042452497bb86ff7640d018e53e",
+      "durationMs": 6360,
+      "text": "Operator. The river kept the ferry and let go of the bell. Ring me through.",
+      "speaker": "caller-tobias",
+      "voiceId": "Gregory",
+      "style": "normal",
+      "inputSha": "df44ddd819c1c69d2baea5eb9de1c4dc599bb4467fe13189c96480cb9b043550"
+    },
+    "clue-tobias-water": {
+      "file": "2b4e0d9116d9b481f6a1e48aa411216a61eb5dd5026ced9a63c7abb13ee88403.mp3",
+      "sha256": "2b4e0d9116d9b481f6a1e48aa411216a61eb5dd5026ced9a63c7abb13ee88403",
+      "durationMs": 5088,
+      "text": "I went under at the mill race. Put me where the water still stands.",
+      "speaker": "caller-tobias",
+      "voiceId": "Gregory",
+      "style": "normal",
+      "inputSha": "60651ea3e749dd4093fb4fcd819c9465c71551c7114d544b19152881e5c4399e"
+    },
+    "clue-tobias-dry": {
+      "file": "5ac0dac84d6d537de8bba3952acf9e68c655f51a3e538f5e662f78849a33449b.mp3",
+      "sha256": "5ac0dac84d6d537de8bba3952acf9e68c655f51a3e538f5e662f78849a33449b",
+      "durationMs": 5304,
+      "text": "Not the orchard, not the drawers, not the chapel. None of them are wet.",
+      "speaker": "caller-tobias",
+      "voiceId": "Gregory",
+      "style": "normal",
+      "inputSha": "15dd4663a2f076713960dd2bd15742d66e04439f311e042b022c956cc3ab3420"
+    },
+    "clue-tobias-tower": {
+      "file": "cbccc255bd285a4eecc7ffe0af629b8aebe58651b684cb880c5a6c12db09cf38.mp3",
+      "sha256": "cbccc255bd285a4eecc7ffe0af629b8aebe58651b684cb880c5a6c12db09cf38",
+      "durationMs": 5304,
+      "text": "The tower already has its operator. Do not ring me there.",
+      "speaker": "caller-tobias",
+      "voiceId": "Gregory",
+      "style": "whisper",
+      "inputSha": "e580b9f7aa5645cfb526362090e3d20cd46acb9ea0cdb8861cd84b92976f72e7"
+    },
+    "caller-ines.open": {
+      "file": "481bb1c975aa8ecf0c55afa53ca713aa0faa0a5ed9ac01e97381673dda5e5e65.mp3",
+      "sha256": "481bb1c975aa8ecf0c55afa53ca713aa0faa0a5ed9ac01e97381673dda5e5e65",
+      "durationMs": 7464,
+      "text": "Operator. Nine beds on my ward and I counted every one. Count me last.",
+      "speaker": "caller-ines",
+      "voiceId": "Amy",
+      "style": "normal",
+      "inputSha": "e9e931cd7da565533448c12507c2ca67d539f75809040cdb0e75690e101c4570"
+    },
+    "clue-ines-count": {
+      "file": "d886013ecbbd5fd0deb79f4107db3e9b38e07d52e1398cd570d6229844619dac.mp3",
+      "sha256": "d886013ecbbd5fd0deb79f4107db3e9b38e07d52e1398cd570d6229844619dac",
+      "durationMs": 5760,
+      "text": "Nine beds on my ward, and I counted them all. Count me last.",
+      "speaker": "caller-ines",
+      "voiceId": "Amy",
+      "style": "normal",
+      "inputSha": "a7fb5fd6bd5e4e632e2b6c321cb9e1469969662d2e5d6e58fbdc26ef735abb86"
+    },
+    "clue-ines-quiet": {
+      "file": "fb3ff609d0af5dc6095a2cb90d262e3bad0ee52a98b7752823575e43dace470a.mp3",
+      "sha256": "fb3ff609d0af5dc6095a2cb90d262e3bad0ee52a98b7752823575e43dace470a",
+      "durationMs": 5568,
+      "text": "No bells, no weather, no psalms. I want it quiet.",
+      "speaker": "caller-ines",
+      "voiceId": "Amy",
+      "style": "normal",
+      "inputSha": "cbe5ce37717af83d1b87565254d0878903e86d1cd6258fdcb976ce8f742c2655"
+    },
+    "clue-ines-after-amos": {
+      "file": "7755c098f2a2152db80ef09e7e97280dc1f7a897f2a16f28a88730fd09835592.mp3",
+      "sha256": "7755c098f2a2152db80ef09e7e97280dc1f7a897f2a16f28a88730fd09835592",
+      "durationMs": 5424,
+      "text": "Amos Kettle goes in before me. He always did the heavy lifting.",
+      "speaker": "caller-ines",
+      "voiceId": "Amy",
+      "style": "normal",
+      "inputSha": "9a4f7f69e374f8412efab807088341684028aa1363e72b7447bea25d83d4090a"
+    },
+    "clue-ines-water": {
+      "file": "fbb6d414928b306e9048fd5703cd7dffd02d19645da0be0fe1d9f0baafe3db01.mp3",
+      "sha256": "fbb6d414928b306e9048fd5703cd7dffd02d19645da0be0fe1d9f0baafe3db01",
+      "durationMs": 5160,
+      "text": "And keep me out of the water. I have seen what it does.",
+      "speaker": "caller-ines",
+      "voiceId": "Amy",
+      "style": "whisper",
+      "inputSha": "e16eb9ec75df2b7913b01751df568b97c6bbc809330b1d8cadd6489c13fdc7e6"
+    },
+    "line13.wakes": {
+      "file": "f04dac9978a270d297c1f3453a43b21435f24140056914be5d8d11e04e63e118.mp3",
+      "sha256": "f04dac9978a270d297c1f3453a43b21435f24140056914be5d8d11e04e63e118",
+      "durationMs": 5616,
+      "text": "Operator. You never wrote down who placed the first call.",
+      "speaker": "line-13",
+      "voiceId": "Stephen",
+      "style": "whisper",
+      "inputSha": "55cfdccb1afb62ad4dc33dc3a07546894707bed192bb9bb0874d5c6aacef296b"
+    },
+    "line13.voice.0": {
+      "file": "bf76e01636a505fcc7ceffa2e2178b9552c3c7edd2fc68cd5a9bbad05159e90f.mp3",
+      "sha256": "bf76e01636a505fcc7ceffa2e2178b9552c3c7edd2fc68cd5a9bbad05159e90f",
+      "durationMs": 3936,
+      "text": "I can hear every cord you pull, operator.",
+      "speaker": "line-13",
+      "voiceId": "Stephen",
+      "style": "whisper",
+      "inputSha": "8b4e6619448a96f6e61b98f8dfa46f38a7f58f30f88f66354d63f06fa2133c7a"
+    },
+    "line13.voice.1": {
+      "file": "d49fe749d4845fd52b34378e4f565f63ed62044e26f46851f7ec4b9d5070552e.mp3",
+      "sha256": "d49fe749d4845fd52b34378e4f565f63ed62044e26f46851f7ec4b9d5070552e",
+      "durationMs": 3528,
+      "text": "Each wrong jack is a letter in my name.",
+      "speaker": "line-13",
+      "voiceId": "Stephen",
+      "style": "whisper",
+      "inputSha": "0c1dfd99125f70169013540c749635385e3e48020cbc5eededbf192a11ac1b3c"
+    },
+    "line13.voice.2": {
+      "file": "a77e4441fc12f7464335e00f06eca97854c4d50062440d7baf6549647205e514.mp3",
+      "sha256": "a77e4441fc12f7464335e00f06eca97854c4d50062440d7baf6549647205e514",
+      "durationMs": 4488,
+      "text": "Stop listening to them. Listen to me.",
+      "speaker": "line-13",
+      "voiceId": "Stephen",
+      "style": "whisper",
+      "inputSha": "01e08f793926d5cc61969291edcd5ed2b106114cde5fed44121905ed8440ccd1"
+    }
+  },
+  "narration": {
+    "video.shot-01": {
+      "file": "14579e216d54aa11dc8eef07ecdede28773a9c287659bbe4e76c8fe215e8129f.mp3",
+      "sha256": "14579e216d54aa11dc8eef07ecdede28773a9c287659bbe4e76c8fe215e8129f",
+      "durationMs": 1560,
+      "text": "The exchange has reopened.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "173a28610c52a1898df744e410dd97af73d5c7200c03d49e4a15b8295f80a2e2"
+    },
+    "video.shot-02": {
+      "file": "85ee1c5407b3179db62f955f9739d9668816a18d2df0bbb0baee4f8e03d34d6a.mp3",
+      "sha256": "85ee1c5407b3179db62f955f9739d9668816a18d2df0bbb0baee4f8e03d34d6a",
+      "durationMs": 7488,
+      "text": "In the nineteen-thirties, every call went through a person. LINE 13 brings that switchboard back, and the dead are calling.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "398c509ed19355cdea6f48bae3d6e2d5a5fc5f1f892f91065a4bd3c3d15da559"
+    },
+    "video.shot-03": {
+      "file": "5f9d3b64516b8dbe5d770088ba453fabe72975064404e9cef50d45aa68318dec.mp3",
+      "sha256": "5f9d3b64516b8dbe5d770088ba453fabe72975064404e9cef50d45aa68318dec",
+      "durationMs": 9240,
+      "text": "You listen. You read the clue. You plug the cord. Each caller has exactly one place they belong, and the clues are enough to find it.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "654944cf72617b9cb5aebf0f461cdff048d9b985be65d3aa4f39d5a946bded66"
+    },
+    "video.shot-04": {
+      "file": "a53e2f98e3b9ef675644b657043336ac8afacf7afe2c689c3473846abe0534ea.mp3",
+      "sha256": "a53e2f98e3b9ef675644b657043336ac8afacf7afe2c689c3473846abe0534ea",
+      "durationMs": 8304,
+      "text": "A wrong route is not a game over. It crosses a line. Another voice cuts in. Something else starts to listen.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "cd5f77872951f7fd183f649b3c46b61e8eb78014b346783f3b186ea5683f3d5f"
+    },
+    "video.shot-05": {
+      "file": "b106872ce527bb1bba70126ae263ac4df723ed6187ad64fe69df02f45b13aa73.mp3",
+      "sha256": "b106872ce527bb1bba70126ae263ac4df723ed6187ad64fe69df02f45b13aa73",
+      "durationMs": 8928,
+      "text": "Every mistake costs you the room. But the last clue each caller gives is a whisper that only comes after a crossed line, so a mistake never leaves you stuck.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "3291d3e1ac21a15024caf6339065080416c01352fd23012219a50527b59eb2ec"
+    },
+    "video.shot-06": {
+      "file": "6a21f3d3672e5b581670bbc586b527706644a10313e1f7baa7809bffd176b1c4.mp3",
+      "sha256": "6a21f3d3672e5b581670bbc586b527706644a10313e1f7baa7809bffd176b1c4",
+      "durationMs": 7896,
+      "text": "When the last line closes, your routes draw a ritual. Your ending depends on how many lines you crossed. There are three.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "858d2b790a0d20d1bf308ffbd8107b63be2fd710b506aa0b300b61ec01a8c147"
+    },
+    "video.shot-07": {
+      "file": "4bb7f309187cd4a427105ad4328d64e126abd2b02d662a82a7a78a471d16182f.mp3",
+      "sha256": "4bb7f309187cd4a427105ad4328d64e126abd2b02d662a82a7a78a471d16182f",
+      "durationMs": 5352,
+      "text": "It plays with the keyboard alone, with the sound off, with motion reduced, and on a phone.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "7b9b37ac157a89aa6d1160cd9a717eb5b8a88ea5101afe9518fba930460b3b5a"
+    },
+    "video.shot-08": {
+      "file": "477807a8c96f7cbd90b7fdeaf62cf2d1964bc44c913b3f102ee07ac04e7afa6d.mp3",
+      "sha256": "477807a8c96f7cbd90b7fdeaf62cf2d1964bc44c913b3f102ee07ac04e7afa6d",
+      "durationMs": 14256,
+      "text": "Behind every connection is a graph. Before an episode ships, a solver proves it has exactly one answer, and that no move can trap you. This one: one solution, three thousand five hundred states checked, zero dead ends.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "3aea39cec05a6edbcc85e99bf2f90c6d7a01b867378a2cc14a505d3f91dafe26"
+    },
+    "video.shot-09": {
+      "file": "a85d0e8f898c6927aa4166bb4333f7a0fac0ed81f299658ef6745f179c3f926e.mp3",
+      "sha256": "a85d0e8f898c6927aa4166bb4333f7a0fac0ed81f299658ef6745f179c3f926e",
+      "durationMs": 12912,
+      "text": "I built it with Kiro. A spec said no move may trap the player. Steering rules became checks that fail on save. And a property test found a bug in my own solver that every hand-written test had missed.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "cd4f1ab76083897fc51e543f406e72c24da35774489863f41cd543ba612fb451"
+    },
+    "video.shot-10": {
+      "file": "97dd926cdb412655f1b1f7a3a908ef98533926d496fe06136d4e75eba677f7f3.mp3",
+      "sha256": "97dd926cdb412655f1b1f7a3a908ef98533926d496fe06136d4e75eba677f7f3",
+      "durationMs": 10560,
+      "text": "Night Operator is a Kiro Crew app. Six agents write an episode. The game's own solver rejects the first draft, sends it back, and only the fixed one ships.",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "f0f10025ad2c31f9e4fd4c89fb71dae439bd2ca87da8396e01a8d1a8756c214a"
+    },
+    "video.shot-11": {
+      "file": "2ce61d3f64df0ca6901c9ec65921c4a72b65cf6a24de3883944766335fdb05c6.mp3",
+      "sha256": "2ce61d3f64df0ca6901c9ec65921c4a72b65cf6a24de3883944766335fdb05c6",
+      "durationMs": 2664,
+      "text": "LINE 13. Would you answer?",
+      "speaker": "narrator",
+      "voiceId": "Matthew",
+      "style": "narration",
+      "inputSha": "11ef8ee6e17362f3379ff8563dacb00c1b9ec11b88c25735631858df8c2ff2b7"
+    }
+  }
+}

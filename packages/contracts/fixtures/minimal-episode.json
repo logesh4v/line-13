@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "1.0.0",
+  "episodeId": "first-ring",
+  "seed": "line-13-first-ring-v1",
+  "title": "The First Ring",
+  "callers": [
+    {
+      "id": "caller-ruth",
+      "displayName": "Ruth Bell",
+      "departedOn": "1931-10-31",
+      "initialLineId": "line-03",
+      "clueIds": ["clue-ruth-bell"],
+      "subtitle": "Operator, put me where the clock rang after midnight."
+    }
+  ],
+  "destinations": [
+    {
+      "id": "destination-bell-tower",
+      "label": "Bell Tower",
+      "description": "The clock stopped at 03:13."
+    },
+    {
+      "id": "destination-orchard",
+      "label": "Orchard",
+      "description": "Something there has learned Ruth's voice."
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue-ruth-bell",
+      "kind": "exclusion",
+      "text": "Do not place me beside the orchard.",
+      "excludedDestinationIds": ["destination-orchard"]
+    }
+  ],
+  "constraints": [
+    {
+      "kind": "required-route",
+      "callerId": "caller-ruth",
+      "destinationId": "destination-bell-tower"
+    },
+    {
+      "kind": "forbidden-route",
+      "callerId": "caller-ruth",
+      "destinationId": "destination-orchard"
+    }
+  ],
+  "intendedRoutes": [
+    {
+      "callerId": "caller-ruth",
+      "destinationId": "destination-bell-tower",
+      "order": 1
+    }
+  ],
+  "cues": [
+    {
+      "id": "cue-ruth-ring",
+      "triggerEventType": "CALL_RINGING",
+      "channel": "lamp",
+      "targetId": "line-03",
+      "effect": "ring",
+      "intensity": 1,
+      "durationMs": 1800,
+      "reducedMotionAlternative": "fade",
+      "silentAlternative": "visual-signal"
+    },
+    {
+      "id": "cue-ruth-wrong-route",
+      "triggerEventType": "ROUTE_REJECTED",
+      "channel": "environment",
+      "effect": "voltage-drop",
+      "intensity": 2,
+      "durationMs": 900,
+      "reducedMotionAlternative": "fade",
+      "silentAlternative": "visual-signal"
+    }
+  ],
+  "endings": [
+    {
+      "id": "ending-first-connection",
+      "label": "The First Connection",
+      "description": "The bell stops. A thirteenth lamp wakes behind you.",
+      "requiredEventTypes": ["ROUTE_CONFIRMED"]
+    }
+  ],
+  "assets": [],
+  "solverProof": {
+    "status": "draft",
+    "solutionCount": 1,
+    "shortestSolutionLength": 1,
+    "unreachableNodeIds": [],
+    "proofHash": "pending-graph-validator",
+    "validatorVersion": "0.1.0"
+  },
+  "publishedAt": "2026-11-03T18:09:00.000Z",
+  "integrity": {
+    "algorithm": "SHA-256",
+    "manifestHash": "pending-publication"
+  }
+}

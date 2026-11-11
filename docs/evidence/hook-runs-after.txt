@@ -1,0 +1,54 @@
+
+=== good-minimal.json
+hook "Validate episode on save" exit=0
+PASS packages/contracts/fixtures/__hook-demo.json  solutions=1 recoveryStates=4
+
+=== zero-solution.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json  failingSeed=line-13-zero-solution-v1
+  - SOLVER EMPTY_DOMAIN at $.constraints[caller=caller-ruth]: Caller "caller-ruth" has no permitted destination.
+
+=== no-solution.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json  failingSeed=line-13-no-solution-v1
+  - SOLVER NO_SOLUTION at $.constraints: No assignment of destinations satisfies every constraint.
+  - SOLVER INTENDED_SOLUTION_INVALID at $.intendedRoutes: The authored intended routes are not a complete solution of the graph.
+
+=== two-solution.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json  failingSeed=line-13-multi-solution-v1
+  - SOLVER MULTIPLE_SOLUTIONS at $.constraints: Episode has 2 complete solutions; declare authored ambiguity or tighten the constraints.
+
+=== two-solution-declared-authored.json  (--allow-ambiguity)
+gate exit=0
+PASS ../../.kiro/crew/scratch/runtime-049c8af1/line13-demo-shVwXL/two-solution-declared-authored.json  solutions=2 recoveryStates=5
+
+=== trap-unproven.json  (--recovery-limit 200)
+gate exit=1
+FAIL ../../.kiro/crew/scratch/runtime-049c8af1/line13-demo-shVwXL/trap-unproven.json  failingSeed=line-13-four-callers-v1
+  - SOLVER RECOVERY_PROOF_INCOMPLETE at $.constraints: Recovery sweep stopped after 200 states without covering the whole reachable space, so the recovery guarantee is unproven; raise recoveryStateLimit or reduce the branching of the graph.
+
+=== four-callers-full-proof.json
+hook "Validate episode on save" exit=0
+PASS packages/contracts/fixtures/__hook-demo.json  solutions=1 recoveryStates=2760
+
+=== shared-destination-unwinnable.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json  failingSeed=line-13-shared-destination-v1
+  - SOLVER NO_SOLUTION at $.constraints: No assignment of destinations satisfies every constraint.
+  - SOLVER INTENDED_SOLUTION_INVALID at $.intendedRoutes: The authored intended routes are not a complete solution of the graph.
+
+=== malformed.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json
+  - MALFORMED_JSON: Unexpected end of JSON input
+
+=== schema-wrong-version.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json
+  - SCHEMA INVALID_VALUE at $.schemaVersion: schemaVersion must equal 1.0.0.
+
+=== not-an-object.json
+hook "Validate episode on save" exit=1
+FAIL packages/contracts/fixtures/__hook-demo.json
+  - SCHEMA INVALID_TYPE at $: Manifest must be an object.

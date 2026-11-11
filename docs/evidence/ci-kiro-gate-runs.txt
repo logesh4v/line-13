@@ -1,0 +1,19 @@
+### check-kiro on the committed checkout
+check-kiro: 12 required paths present; .kiro tracked and not ignored
+exit=0
+
+### .kiro/ added to .gitignore (temporary edit, reverted)
+FAIL .gitignore:14 lists .kiro: .kiro/
+exit=1
+
+### untracked .kiro file
+FAIL untracked file under .kiro: .kiro/hooks/zz-new.json
+exit=1
+
+### required fixture missing (temporary rename, reverted)
+FAIL missing required path: packages/contracts/fixtures/minimal-episode.json
+exit=1
+
+### after revert
+check-kiro: 12 required paths present; .kiro tracked and not ignored
+exit=0

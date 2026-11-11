@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Validate episode on save",
+      "description": "Episode JSON must parse, satisfy the EpisodeManifestV1 contract and be verified by the graph solver (exactly one solution, recoverable). Exit 1 reports ambiguity / zero-solution / schema errors to the agent.",
+      "trigger": "PostFileSave",
+      "matcher": "(^|/)(fixtures|episodes)/[^/]+\\.json$",
+      "action": { "type": "command", "command": "node scripts/episode-check.mjs" },
+      "timeout": 60
+    }
+  ]
+}

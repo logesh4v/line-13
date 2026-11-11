@@ -1,0 +1,233 @@
+{
+  "$comment": "Reviewable input for scripts/voices/generate.mjs. Every `text` is the exact on-screen caption. Neural engine only (phonation/whispered effects are rejected by Polly neural, so a whisper is soft volume + slow rate). `rate` and `pauseMs` shape the 1930s telephone cadence.",
+  "engine": "neural",
+  "sampleRate": "24000",
+  "voices": {
+    "caller-ruth": {
+      "voiceId": "Joanna",
+      "languageCode": "en-US",
+      "rate": "88%"
+    },
+    "caller-amos": {
+      "voiceId": "Arthur",
+      "languageCode": "en-GB",
+      "rate": "82%"
+    },
+    "caller-tobias": {
+      "voiceId": "Gregory",
+      "languageCode": "en-US",
+      "rate": "86%"
+    },
+    "caller-ines": {
+      "voiceId": "Amy",
+      "languageCode": "en-GB",
+      "rate": "90%"
+    },
+    "line-13": {
+      "voiceId": "Stephen",
+      "languageCode": "en-US",
+      "rate": "72%"
+    },
+    "narrator": {
+      "voiceId": "Matthew",
+      "languageCode": "en-US",
+      "rate": "94%"
+    }
+  },
+  "lines": [
+    {
+      "id": "caller-ruth.open",
+      "speaker": "caller-ruth",
+      "style": "normal",
+      "text": "Operator. Put me where the clock rang after midnight."
+    },
+    {
+      "id": "clue-ruth-clock",
+      "speaker": "caller-ruth",
+      "style": "normal",
+      "text": "Put me where the clock rang after midnight."
+    },
+    {
+      "id": "clue-ruth-orchard",
+      "speaker": "caller-ruth",
+      "style": "normal",
+      "text": "Do not place me beside the orchard. Something there has learned my voice."
+    },
+    {
+      "id": "clue-ruth-indoors",
+      "speaker": "caller-ruth",
+      "style": "whisper",
+      "text": "I did not die indoors, operator. Do not file me with the cold ones."
+    },
+    {
+      "id": "caller-amos.open",
+      "speaker": "caller-amos",
+      "style": "normal",
+      "text": "Operator. Forty winters I dug that hill. Find me a place where the ground is mine."
+    },
+    {
+      "id": "clue-amos-ground",
+      "speaker": "caller-amos",
+      "style": "normal",
+      "text": "Forty winters on that hill, operator. I want the ground, not a roof over me."
+    },
+    {
+      "id": "clue-amos-cold",
+      "speaker": "caller-amos",
+      "style": "normal",
+      "text": "No cold drawers, no standing water, and the chapel door was always shut to me."
+    },
+    {
+      "id": "clue-amos-tower",
+      "speaker": "caller-amos",
+      "style": "whisper",
+      "text": "The bell tower belongs to Ruth Bell. Leave me the apple trees."
+    },
+    {
+      "id": "caller-tobias.open",
+      "speaker": "caller-tobias",
+      "style": "normal",
+      "text": "Operator. The river kept the ferry and let go of the bell. Ring me through."
+    },
+    {
+      "id": "clue-tobias-water",
+      "speaker": "caller-tobias",
+      "style": "normal",
+      "text": "I went under at the mill race. Put me where the water still stands."
+    },
+    {
+      "id": "clue-tobias-dry",
+      "speaker": "caller-tobias",
+      "style": "normal",
+      "text": "Not the orchard, not the drawers, not the chapel. None of them are wet."
+    },
+    {
+      "id": "clue-tobias-tower",
+      "speaker": "caller-tobias",
+      "style": "whisper",
+      "text": "The tower already has its operator. Do not ring me there."
+    },
+    {
+      "id": "caller-ines.open",
+      "speaker": "caller-ines",
+      "style": "normal",
+      "text": "Operator. Nine beds on my ward and I counted every one. Count me last."
+    },
+    {
+      "id": "clue-ines-count",
+      "speaker": "caller-ines",
+      "style": "normal",
+      "text": "Nine beds on my ward, and I counted them all. Count me last."
+    },
+    {
+      "id": "clue-ines-quiet",
+      "speaker": "caller-ines",
+      "style": "normal",
+      "text": "No bells, no weather, no psalms. I want it quiet."
+    },
+    {
+      "id": "clue-ines-after-amos",
+      "speaker": "caller-ines",
+      "style": "normal",
+      "text": "Amos Kettle goes in before me. He always did the heavy lifting."
+    },
+    {
+      "id": "clue-ines-water",
+      "speaker": "caller-ines",
+      "style": "whisper",
+      "text": "And keep me out of the water. I have seen what it does."
+    },
+    {
+      "id": "line13.wakes",
+      "speaker": "line-13",
+      "style": "whisper",
+      "text": "Operator. You never wrote down who placed the first call."
+    },
+    {
+      "id": "line13.voice.0",
+      "speaker": "line-13",
+      "style": "whisper",
+      "text": "I can hear every cord you pull, operator."
+    },
+    {
+      "id": "line13.voice.1",
+      "speaker": "line-13",
+      "style": "whisper",
+      "text": "Each wrong jack is a letter in my name."
+    },
+    {
+      "id": "line13.voice.2",
+      "speaker": "line-13",
+      "style": "whisper",
+      "text": "Stop listening to them. Listen to me."
+    }
+  ],
+  "narration": [
+    {
+      "id": "video.shot-01",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "The exchange has reopened."
+    },
+    {
+      "id": "video.shot-02",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "In the nineteen-thirties, every call went through a person. LINE 13 brings that switchboard back, and the dead are calling."
+    },
+    {
+      "id": "video.shot-03",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "You listen. You read the clue. You plug the cord. Each caller has exactly one place they belong, and the clues are enough to find it."
+    },
+    {
+      "id": "video.shot-04",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "A wrong route is not a game over. It crosses a line. Another voice cuts in. Something else starts to listen."
+    },
+    {
+      "id": "video.shot-05",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "Every mistake costs you the room. But the last clue each caller gives is a whisper that only comes after a crossed line, so a mistake never leaves you stuck."
+    },
+    {
+      "id": "video.shot-06",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "When the last line closes, your routes draw a ritual. Your ending depends on how many lines you crossed. There are three."
+    },
+    {
+      "id": "video.shot-07",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "It plays with the keyboard alone, with the sound off, with motion reduced, and on a phone."
+    },
+    {
+      "id": "video.shot-08",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "Behind every connection is a graph. Before an episode ships, a solver proves it has exactly one answer, and that no move can trap you. This one: one solution, three thousand five hundred states checked, zero dead ends."
+    },
+    {
+      "id": "video.shot-09",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "I built it with Kiro. A spec said no move may trap the player. Steering rules became checks that fail on save. And a property test found a bug in my own solver that every hand-written test had missed."
+    },
+    {
+      "id": "video.shot-10",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "Night Operator is a Kiro Crew app. Six agents write an episode. The game's own solver rejects the first draft, sends it back, and only the fixed one ships."
+    },
+    {
+      "id": "video.shot-11",
+      "speaker": "narrator",
+      "style": "narration",
+      "text": "LINE 13. Would you answer?"
+    }
+  ]
+}

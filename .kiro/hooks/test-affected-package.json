@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run tests of the affected package",
+      "description": "Saving a TS/TSX file under apps/* or packages/* runs that workspace's own test script.",
+      "trigger": "PostFileSave",
+      "matcher": "^(apps|packages)/[^/]+/(src|test)/.*\\.tsx?$",
+      "action": { "type": "command", "command": "node scripts/test-affected.mjs" },
+      "timeout": 300
+    }
+  ]
+}

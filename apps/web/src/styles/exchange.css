@@ -1,0 +1,1147 @@
+/*
+ * The operator room.
+ *
+ * There is no application shell in this file: no hero, no feature card, no
+ * sidebar, no statistic tile, no navigation. Every surface is a part of the
+ * exchange — walnut carcass, brass plate, jack field, paper ticket, control
+ * strip, glass readout.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--room-back);
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-room);
+  /* A touch never scrolls the board out from under a drag. */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ───────────────────────────── the room ───────────────────────────── */
+
+.room {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(10px, 1.4vh, 20px);
+  padding: clamp(12px, 2.2vh, 28px) clamp(12px, 3vw, 48px);
+  background:
+    radial-gradient(circle at 72% 14%, rgba(236, 166, 68, 0.13), transparent 30%),
+    linear-gradient(180deg, var(--room-front) 0%, var(--room-back) 100%);
+  overflow: hidden;
+}
+
+/* Smoke and the pressed-tin grid of the room. Decoration that stops with the
+   scene, never animated on its own. */
+.room::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(230, 182, 105, 0.12) 40px),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(230, 182, 105, 0.08) 40px);
+}
+
+[data-contrast="high"] .room::before {
+  display: none;
+}
+
+.room > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ──────────────────────── the brass header plate ──────────────────────── */
+
+.plate {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(10px, 2vw, 26px);
+  padding: clamp(8px, 1.4vh, 14px) clamp(12px, 2vw, 22px);
+  border: var(--rim) solid var(--brass-rim);
+  border-radius: 8px;
+  background: linear-gradient(170deg, rgba(69, 43, 24, 0.9), rgba(16, 10, 6, 0.95));
+  box-shadow: inset 0 0 0 1px rgba(241, 182, 90, 0.12);
+}
+
+.plate-mark {
+  font-family: var(--font-engraved);
+  font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: 0.26em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.plate-mark strong {
+  display: block;
+  font-family: var(--font-room);
+  font-weight: 500;
+  font-size: clamp(20px, 2.6vw, 34px);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-transform: none;
+}
+
+.plate-mark strong span {
+  color: var(--accent);
+}
+
+.status {
+  justify-self: end;
+  text-align: right;
+  min-width: 0;
+}
+
+/* The one place the operator reads what the exchange is doing. */
+.status-line {
+  font-family: var(--font-engraved);
+  font-size: clamp(11px, 1.25vw, 14px);
+  letter-spacing: 0.1em;
+  color: var(--lamp-live);
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+
+.status-prompt {
+  margin-top: 4px;
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.status-notice {
+  margin-top: 4px;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+/* ───────────────────────────── the board ───────────────────────────── */
+
+.board-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
+  gap: clamp(12px, 1.6vw, 22px);
+  min-height: 0;
+}
+
+.board {
+  position: relative;
+  min-height: 0;
+  border: var(--rim) solid var(--brass);
+  border-radius: var(--radius-board);
+  background: linear-gradient(145deg, var(--walnut-lit), var(--walnut) 62%, var(--walnut-deep));
+  box-shadow: var(--shadow-board);
+  overflow: hidden;
+}
+
+/* The maker's plate screwed to the bottom rail. */
+.board::after {
+  content: "NIGHT EXCHANGE · OPERATOR 13";
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--brass-hair);
+  color: var(--brass-lit);
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-align: center;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.jack-field {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(8px, 1vw, 14px);
+  padding: clamp(16px, 2.2vw, 26px) clamp(16px, 2.2vw, 26px) 46px;
+}
+
+/* Lines across the top, destinations beneath, the thirteenth lamp last: the
+   cords hang down the board the way they would on the real one. */
+.jack-row {
+  display: grid;
+  gap: clamp(8px, 1vw, 14px);
+}
+
+.jack-row--lines {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.jack-row--destinations {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.jack-row--finale {
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  margin-top: clamp(4px, 1vh, 12px);
+}
+
+.jack-row-label {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/* ───────────────────────────── one jack ───────────────────────────── */
+
+.jack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 118px;
+  padding: 12px 8px;
+  border: var(--rim) solid var(--brass-dim);
+  border-radius: var(--radius-line);
+  background: rgba(12, 8, 5, 0.38);
+  text-align: center;
+  cursor: default;
+  transition:
+    transform var(--beat) ease,
+    filter var(--beat) ease,
+    background var(--beat) ease,
+    border-color var(--beat) ease;
+}
+
+button.jack {
+  cursor: pointer;
+}
+
+button.jack:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.12);
+  border-color: var(--brass-rim);
+}
+
+button.jack:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+button.jack:disabled:hover {
+  transform: none;
+  filter: none;
+}
+
+.jack[data-operable="true"] {
+  border-color: var(--brass-rim);
+  background: rgba(32, 20, 11, 0.6);
+}
+
+.jack-socket {
+  width: var(--jack-min);
+  height: var(--jack-min);
+  border: 3px solid var(--brass-rim);
+  border-radius: 50%;
+  background: #15100b;
+  box-shadow: inset 0 0 0 4px #3b2818;
+  display: grid;
+  place-items: center;
+}
+
+.jack-socket::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--brass-lit);
+  border-radius: 50%;
+  background: #020201;
+}
+
+/* A plugged jack carries the cord's own plug, not a colour change alone. */
+.jack[data-plugged="true"] .jack-socket::after {
+  width: 22px;
+  height: 22px;
+  background: var(--cord);
+  border-color: var(--lamp-core);
+}
+
+.lamp {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--lamp-dead);
+  box-shadow: inset 0 0 0 4px var(--lamp-ring);
+  color: var(--lamp-live);
+}
+
+.lamp[data-lamp="ringing"],
+.lamp[data-lamp="steady"] {
+  background: var(--lamp-live);
+  box-shadow: 0 0 24px var(--lamp-hot), inset 0 0 0 3px var(--lamp-core);
+}
+
+.lamp[data-lamp="flicker"] {
+  background: var(--lamp-crossed);
+  box-shadow: 0 0 18px var(--lamp-crossed), inset 0 0 0 3px var(--lamp-core);
+}
+
+.lamp[data-lamp="listening"] {
+  background: var(--walnut-deep);
+  box-shadow: 0 0 14px var(--lamp-crossed), inset 0 0 0 3px var(--lamp-crossed);
+}
+
+.lamp[data-lamp="ringing"]::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1px solid currentColor;
+  border-radius: inherit;
+  animation: ring-pulse 1.35s ease-out infinite;
+}
+
+.lamp[data-lamp="flicker"] {
+  animation: lamp-flicker 0.42s steps(2) 4;
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes lamp-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.jack-label {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+/* The word that carries the lamp's state when colour and motion cannot. */
+.jack-state {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.jack[data-lamp="flicker"] .jack-state {
+  color: var(--cord-crossed);
+}
+
+/* Dead lines: scenery, hidden from assistive technology, never operable. */
+.jack--dormant {
+  min-height: 92px;
+  opacity: 0.4;
+}
+
+.jack--dormant .lamp {
+  box-shadow: inset 0 0 0 3px var(--lamp-ring);
+}
+
+.cord-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cord-shadow,
+.cord-weave {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.cord-shadow {
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 9;
+  filter: blur(3px);
+}
+
+/* The cloth weave: a pale dashed thread laid along the cord. */
+.cord-weave {
+  stroke: rgba(255, 226, 190, 0.22);
+  stroke-width: 2;
+  stroke-dasharray: 2 6;
+}
+
+.cord-plug {
+  fill: #2a1b0f;
+  stroke: var(--brass-lit);
+  stroke-width: 2;
+}
+
+.cord[data-taut="true"] .cord-path {
+  stroke: var(--phosphor);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px var(--phosphor));
+  transition: stroke 1s ease, stroke-width 1s ease;
+}
+
+.cord[data-taut="true"] .cord-weave,
+.cord[data-taut="true"] .cord-shadow {
+  opacity: 0;
+}
+
+.cord-path {
+  fill: none;
+  stroke: var(--cord);
+  stroke-width: 8;
+  stroke-linecap: round;
+  filter: drop-shadow(0 5px 3px rgba(0, 0, 0, 0.45));
+}
+
+.cord-path[data-cord="rejected"] {
+  stroke: var(--cord-crossed);
+  stroke-dasharray: 16 10;
+}
+
+.cord-path[data-cord="held"] {
+  stroke-dasharray: 10 12;
+  opacity: 0.75;
+}
+
+/* ─────────────────────────── the side rail ─────────────────────────── */
+
+.rail {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(10px, 1.4vh, 16px);
+  min-height: 0;
+}
+
+/* Ivory routing ticket, pinned slightly off-square. */
+.ticket {
+  border-radius: 6px;
+  padding: clamp(14px, 1.6vw, 20px);
+  background-color: var(--ticket);
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 25px,
+    var(--ticket-rule) 26px
+  );
+  color: var(--ticket-ink);
+  box-shadow: var(--shadow-paper);
+  transform: rotate(0.35deg);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+[data-contrast="high"] .ticket,
+[data-motion="held"] .ticket {
+  transform: none;
+}
+
+.ticket h2 {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #6b4a26;
+  font-size: clamp(17px, 1.7vw, 21px);
+  font-weight: 500;
+}
+
+.ticket dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 3px 10px;
+  font-size: 13px;
+}
+
+.ticket dt {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ticket-ink-soft);
+  text-transform: uppercase;
+  align-self: center;
+}
+
+.ticket dd {
+  margin: 0;
+}
+
+.ticket-clues {
+  margin: 12px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px dashed #78623f;
+  list-style: none;
+}
+
+.ticket-clues li {
+  margin: 0 0 7px;
+  padding-left: 14px;
+  position: relative;
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.ticket-clues li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  font-style: normal;
+  color: var(--ticket-ink-soft);
+}
+
+.ticket-empty {
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ticket-ink-soft);
+}
+
+.ticket-actions {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+/* A written key on the ticket, pressed with a finger or the keyboard. */
+.key {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #6c4c29;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--ticket-ink);
+  text-align: left;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--beat) ease, filter var(--beat) ease;
+}
+
+.key:hover:not(:disabled) {
+  transform: translateX(3px);
+  filter: brightness(1.08);
+}
+
+.key:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.key--primary {
+  background: var(--accent);
+  border-color: #6b4a26;
+  font-weight: 700;
+}
+
+/* ──────────────────────── the control strip ──────────────────────── */
+
+.controls {
+  border: var(--rim) solid var(--brass-rim);
+  border-radius: 8px;
+  padding: 10px clamp(10px, 1.2vw, 14px) 12px;
+  background: linear-gradient(170deg, rgba(69, 43, 24, 0.85), rgba(16, 10, 6, 0.95));
+}
+
+.controls-legend {
+  margin: 0 0 8px;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.switch-bank {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+  gap: 8px;
+}
+
+/* A real toggle switch: engraved plate, throw, and the position in words. */
+.switch {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-height: 62px;
+  padding: 7px 4px;
+  border: var(--rim) solid var(--brass-dim);
+  border-radius: 5px;
+  background: rgba(12, 8, 5, 0.5);
+  cursor: pointer;
+  transition: border-color var(--beat) ease, background var(--beat) ease;
+}
+
+.switch:hover {
+  border-color: var(--brass-rim);
+}
+
+.switch-engraving {
+  font-family: var(--font-engraved);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+.switch-throw {
+  position: relative;
+  width: 22px;
+  height: 26px;
+  border: 1px solid var(--brass-rim);
+  border-radius: 3px;
+  background: #0d0906;
+}
+
+.switch-throw::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--brass-lit);
+  transition: top var(--beat) ease;
+  top: 14px;
+}
+
+.switch[aria-checked="true"] .switch-throw::after {
+  top: 3px;
+  background: var(--lamp-live);
+}
+
+.switch-position {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+/* ─────────────────────── the glass readout rail ─────────────────────── */
+
+.rail-glass {
+  display: grid;
+  gap: 6px;
+  min-height: 62px;
+  padding: 10px clamp(12px, 2vw, 18px);
+  border: var(--rim) solid var(--brass-dim);
+  border-radius: 6px;
+  background: rgba(7, 12, 8, 0.72);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: clamp(14px, 1.5vw, 17px);
+  line-height: 1.4;
+  color: var(--phosphor);
+}
+
+.subtitle[data-corrupted="true"] {
+  color: var(--cord-crossed);
+  letter-spacing: 0.04em;
+}
+
+.subtitle-speaker {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.captions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.captions li {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+.captions li::before {
+  content: "[ ";
+}
+
+.captions li::after {
+  content: " ]";
+}
+
+/* ───────────────────── environment cues on the room ───────────────────── */
+
+.room[data-environment="voltage-drop"] {
+  animation: voltage-drop 0.9s ease;
+}
+
+.room[data-environment="ritual-reveal"] {
+  animation: ritual-reveal 1.6s ease;
+}
+
+@keyframes voltage-drop {
+  0%,
+  100% {
+    filter: none;
+  }
+  22% {
+    filter: brightness(0.42) saturate(0.7);
+  }
+  44% {
+    filter: brightness(1.05);
+  }
+  66% {
+    filter: brightness(0.55);
+  }
+}
+
+@keyframes ritual-reveal {
+  0% {
+    filter: none;
+  }
+  50% {
+    filter: brightness(1.18) saturate(1.15);
+  }
+  100% {
+    filter: none;
+  }
+}
+
+/* With motion held the same beats arrive as a readable dip, not a strobe. */
+[data-motion="held"] .room[data-environment],
+[data-contrast="high"] .room[data-environment] {
+  animation: none;
+}
+
+[data-motion="held"] .room[data-environment="voltage-drop"] {
+  transition: filter 0.4s ease;
+  filter: brightness(0.72);
+}
+
+/* ─────────────────────────── the entrance ─────────────────────────── */
+
+.entrance {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #030305;
+  overflow: hidden;
+}
+
+.entrance-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.92) 88%);
+  pointer-events: none;
+}
+
+.entrance-signal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(78vw, 980px);
+  height: 2px;
+  background: var(--lamp-hot);
+  box-shadow: 0 0 24px var(--lamp-hot);
+  transform: translate(-50%, -50%) scaleX(0);
+  animation: signal-line 6s ease forwards;
+}
+
+.entrance-bell {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border: 4px solid var(--brass-rim);
+  border-radius: 50%;
+  background: #25160b;
+  box-shadow: inset 0 0 0 8px #090604;
+  animation: bell-swell 6s ease forwards;
+}
+
+.entrance-copy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 48rem;
+}
+
+.entrance-eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.44em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.entrance-title {
+  margin: 0;
+  font-size: clamp(46px, 9vw, 130px);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  color: #f8ecd4;
+}
+
+.entrance-title span {
+  color: var(--accent);
+}
+
+.entrance-caption {
+  margin: 22px 0 0;
+  min-height: 2.6em;
+  font-size: clamp(14px, 1.6vw, 17px);
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.entrance-caption--stacked {
+  min-height: 0;
+}
+
+.entrance-caption--stacked p {
+  margin: 0 0 5px;
+}
+
+.entrance-plate {
+  margin: 16px 0 0;
+  display: inline-block;
+  padding: 7px 14px;
+  border: 1px solid var(--brass-rim);
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.entrance-skip {
+  position: absolute;
+  right: clamp(14px, 3vw, 28px);
+  bottom: clamp(14px, 3vw, 28px);
+  z-index: 4;
+  padding: 11px 15px;
+  border: 1px solid #745026;
+  border-radius: 3px;
+  background: rgba(20, 12, 7, 0.78);
+  color: #dec79f;
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@keyframes signal-line {
+  0%,
+  10% {
+    transform: translate(-50%, -50%) scaleX(0);
+    opacity: 0;
+  }
+  26%,
+  74% {
+    transform: translate(-50%, -50%) scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scaleX(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes bell-swell {
+  0%,
+  12% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  22% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: inset 0 0 0 8px #090604, 0 0 0 0 rgba(240, 173, 75, 0.7);
+  }
+  40% {
+    box-shadow: inset 0 0 0 8px #090604, 0 0 0 45px rgba(240, 173, 75, 0);
+  }
+  70% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  86%,
+  100% {
+    transform: scale(6);
+    opacity: 0;
+  }
+}
+
+/* Motion held: no camera move, no rush, no flicker. A static reveal. */
+.entrance[data-still="true"] .entrance-signal,
+.entrance[data-still="true"] .entrance-bell {
+  animation: none;
+}
+
+.entrance[data-still="true"] .entrance-signal {
+  transform: translate(-50%, -50%) scaleX(1);
+  opacity: 0.8;
+}
+
+.entrance[data-still="true"] .entrance-bell {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ─────────────────────────── the ending ─────────────────────────── */
+
+.ending {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 5vw, 56px);
+  background: radial-gradient(circle at 50% 42%, rgba(32, 20, 11, 0.96), rgba(3, 3, 5, 0.99));
+}
+
+.ending-panel {
+  max-width: 44rem;
+  text-align: center;
+}
+
+.ending-eyebrow {
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+.ending-panel h2 {
+  margin: 14px 0 0;
+  font-size: clamp(30px, 5vw, 58px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.ending-panel p {
+  margin: 18px 0 0;
+  font-size: clamp(15px, 1.7vw, 19px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ending-route {
+  margin: 22px 0 0;
+  padding: 12px 16px;
+  display: inline-block;
+  border: 1px solid var(--brass-rim);
+  font-family: var(--font-engraved);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--brass-lit);
+  text-transform: uppercase;
+}
+
+
+
+/* ───────────────────────────── smaller rooms ───────────────────────────── */
+
+@media (max-width: 1040px) {
+  .board-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .room {
+    min-height: auto;
+    grid-template-rows: auto auto auto;
+  }
+
+  .plate {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .status {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .ticket {
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 760px) {
+  .jack-row--lines {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jack-row--destinations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .jack-field {
+    padding-bottom: 40px;
+  }
+
+  .jack-row--destinations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jack {
+    min-height: 104px;
+  }
+
+  .board::after {
+    left: 12px;
+    right: 12px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+  }
+
+  .switch-bank {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The dead lines are the first thing to go when the wall gets narrow;
+     they carry no required information. */
+  .jack--dormant {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .jack-field {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .jack {
+    padding: 10px 4px;
+  }
+
+  .jack-label {
+    letter-spacing: 0.08em;
+  }
+
+  .jack-state {
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ──────────────────────────── motion held ──────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  button.jack:hover,
+  .key:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+[data-motion="held"] .lamp[data-lamp="ringing"]::after,
+[data-motion="held"] .lamp[data-lamp="flicker"] {
+  animation: none;
+}
+
+/* With motion held a ringing lamp still has to be unmistakable, so it gains a
+   standing ring instead of a pulsing one. */
+[data-motion="held"] .lamp[data-lamp="ringing"]::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 2px solid var(--lamp-live);
+  border-radius: inherit;
+  opacity: 1;
+  transform: none;
+}
+
+[data-motion="held"] button.jack:hover,
+[data-motion="held"] .key:hover:not(:disabled) {
+  transform: none;
+}
+
+[data-motion="held"] .cord-path {
+  stroke-dasharray: none;
+}

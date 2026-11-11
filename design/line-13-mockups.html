@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LINE 13 — Visual Direction Mockups</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #08090d;
+      color: #f5f1e8;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+    button { font: inherit; }
+    .decision-bar {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 66px;
+      padding: 10px 22px;
+      background: rgba(8, 9, 13, .94);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
+    }
+    .decision-title { min-width: 220px; }
+    .decision-title strong { display: block; letter-spacing: .16em; font-size: 13px; }
+    .decision-title span { color: #aeb2bc; font-size: 11px; }
+    .direction-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .direction-button, .utility-button {
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 999px;
+      color: #e9e9eb;
+      background: rgba(255,255,255,.06);
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+      font-size: 12px;
+    }
+    .direction-button:hover, .utility-button:hover { transform: translateY(-1px); background: rgba(255,255,255,.11); }
+    .direction-button[aria-pressed="true"] { background: #f0b45c; border-color: #f0b45c; color: #17100a; font-weight: 800; }
+    .utility-button { white-space: nowrap; }
+    .frame { min-height: calc(100vh - 66px); position: relative; overflow: hidden; }
+    .direction { display: none; min-height: calc(100vh - 66px); position: relative; isolation: isolate; }
+    .direction.active { display: block; }
+    .stage {
+      min-height: calc(100vh - 66px);
+      position: relative;
+      overflow: hidden;
+      padding: 54px clamp(20px, 4vw, 70px) 34px;
+    }
+    .stage::before, .stage::after { content: ""; position: absolute; pointer-events: none; z-index: -1; }
+    .stage-header {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      max-width: 1500px;
+      margin: 0 auto 28px;
+    }
+    .eyebrow { text-transform: uppercase; letter-spacing: .28em; font-size: 10px; opacity: .7; margin-bottom: 12px; }
+    h1 { margin: 0; font-size: clamp(38px, 6vw, 88px); line-height: .9; letter-spacing: -.04em; }
+    .tagline { margin: 16px 0 0; max-width: 720px; font-size: clamp(15px, 1.5vw, 20px); line-height: 1.5; opacity: .82; }
+    .stage-status { text-align: right; font-size: 11px; letter-spacing: .13em; text-transform: uppercase; opacity: .72; }
+    .stage-status strong { display: block; margin-top: 8px; font-size: 22px; opacity: 1; }
+    .switchboard-shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 22px;
+      min-height: 560px;
+    }
+    .board, .side-panel { position: relative; overflow: hidden; }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(75px, 1fr));
+      gap: 14px;
+      padding: 28px;
+      min-height: 420px;
+      position: relative;
+      z-index: 2;
+    }
+    .line {
+      min-height: 124px;
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease, background .2s ease;
+    }
+    .line:hover { transform: translateY(-3px); filter: brightness(1.12); }
+    .lamp { width: 22px; height: 22px; border-radius: 50%; position: relative; }
+    .lamp.ringing::after {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: inherit;
+      border: 1px solid currentColor;
+      animation: ringPulse 1.35s ease-out infinite;
+    }
+    @keyframes ringPulse { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+    .jack { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; }
+    .jack::after { content: ""; width: 14px; height: 14px; border-radius: 50%; }
+    .line-number { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
+    .cords { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+    .cord-path { fill: none; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 5px 3px rgba(0,0,0,.45)); }
+    .ticket { padding: 22px; min-height: 230px; }
+    .ticket h2 { margin: 0 0 15px; font-size: 22px; }
+    .ticket p { margin: 7px 0; font-size: 14px; line-height: 1.5; }
+    .transcript { margin-top: 16px; padding-top: 14px; font-style: italic; }
+    .choice-row { display: grid; gap: 9px; padding: 0 22px 22px; }
+    .choice {
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .choice:hover { transform: translateX(3px); filter: brightness(1.14); }
+    .principle-strip {
+      max-width: 1500px;
+      margin: 20px auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .principle { padding: 12px 14px; font-size: 11px; line-height: 1.4; }
+    .principle strong { display: block; font-size: 12px; margin-bottom: 4px; }
+
+    /* Direction A — 1930s Occult Exchange */
+    .theme-a .stage {
+      color: #f5e7c8;
+      background:
+        radial-gradient(circle at 72% 16%, rgba(236,166,68,.13), transparent 28%),
+        linear-gradient(180deg, #160f0a 0%, #090705 100%);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .theme-a .stage::before {
+      inset: 0;
+      opacity: .13;
+      background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(230,182,105,.12) 40px), repeating-linear-gradient(0deg, transparent 0 39px, rgba(230,182,105,.08) 40px);
+    }
+    .theme-a h1 { font-family: Georgia, serif; font-weight: 500; text-shadow: 0 0 34px rgba(224,159,59,.22); }
+    .theme-a .accent { color: #f1b65a; }
+    .theme-a .board {
+      border: 1px solid #7d542d;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #452b18, #1c1009 62%, #100a06);
+      box-shadow: inset 0 0 0 8px #120b06, inset 0 0 0 10px #986432, 0 35px 90px rgba(0,0,0,.58);
+    }
+    .theme-a .board::after {
+      content: "NIGHT EXCHANGE · OPERATOR 13";
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(241,182,90,.35);
+      color: rgba(241,182,90,.58);
+      text-align: center;
+      letter-spacing: .28em;
+      font-size: 9px;
+    }
+    .theme-a .line { border: 1px solid rgba(232,187,112,.2); background: rgba(12,8,5,.38); }
+    .theme-a .lamp { background: #4f3318; color: #ffbd52; box-shadow: inset 0 0 0 4px #9c6c32; }
+    .theme-a .lamp.ringing { background: #ffc665; box-shadow: 0 0 24px #f39b24, inset 0 0 0 3px #fff1b0; }
+    .theme-a .jack { border: 3px solid #ae7942; background: #15100b; box-shadow: inset 0 0 0 4px #3b2818; }
+    .theme-a .jack::after { background: #020201; border: 1px solid #c7904f; }
+    .theme-a .cord-path { stroke: #8f1826; }
+    .theme-a .side-panel { border-radius: 8px; background: #d8c69c; color: #2b2114; box-shadow: 0 30px 70px rgba(0,0,0,.45); transform: rotate(.35deg); }
+    .theme-a .ticket { background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(69,48,25,.12) 27px); }
+    .theme-a .ticket h2 { font-weight: 500; border-bottom: 2px solid #6b4a26; padding-bottom: 10px; }
+    .theme-a .transcript { border-top: 1px dashed #78623f; }
+    .theme-a .choice { border: 1px solid #6c4c29; background: rgba(255,255,255,.18); color: #2b2114; font-family: inherit; }
+    .theme-a .principle { border: 1px solid rgba(232,187,112,.2); background: rgba(50,31,17,.48); }
+
+    /* Direction B — 1970s Bureau */
+    .theme-b .stage {
+      color: #d6e4d3;
+      background: linear-gradient(135deg, #111715 0%, #050807 62%, #101312 100%);
+      font-family: "Courier New", ui-monospace, monospace;
+    }
+    .theme-b .stage::before {
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px);
+      opacity: .72;
+    }
+    .theme-b .stage::after { width: 520px; height: 520px; border-radius: 50%; right: -210px; top: -250px; background: rgba(203,45,45,.12); filter: blur(60px); }
+    .theme-b h1 { font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; text-transform: uppercase; letter-spacing: .02em; }
+    .theme-b .accent { color: #ff4c42; }
+    .theme-b .board { border: 2px solid #4b5650; border-radius: 3px; background: linear-gradient(#39413d, #171d1a); box-shadow: inset 0 0 0 7px #0b0f0d, 18px 24px 0 rgba(0,0,0,.38); }
+    .theme-b .board::after { content: "AFTERLIFE COMMUNICATIONS BUREAU · PROPERTY 13-B"; position: absolute; left: 25px; bottom: 16px; color: #95a099; font-size: 10px; letter-spacing: .16em; }
+    .theme-b .board-grid { gap: 9px; }
+    .theme-b .line { border: 1px solid #56615b; border-radius: 2px; background: linear-gradient(#252c28, #141916); }
+    .theme-b .lamp { border-radius: 3px; background: #391919; color: #ff3e35; border: 2px solid #6a6960; }
+    .theme-b .lamp.ringing { background: #ff3e35; box-shadow: 0 0 18px #ff281e; }
+    .theme-b .jack { border-radius: 3px; border: 3px solid #768078; background: #080b09; }
+    .theme-b .jack::after { border-radius: 2px; background: #121713; border: 1px solid #a3aaa5; }
+    .theme-b .cord-path { stroke: #d9c34a; }
+    .theme-b .side-panel { border: 1px solid #64736a; border-radius: 2px; color: #b9ffad; background: #07100a; box-shadow: inset 0 0 24px rgba(87,255,94,.09), 18px 24px 0 rgba(0,0,0,.3); }
+    .theme-b .ticket h2 { color: #ff5a50; letter-spacing: .08em; text-transform: uppercase; font-size: 18px; }
+    .theme-b .ticket p::before { content: "> "; color: #5eff71; }
+    .theme-b .transcript { border-top: 1px solid #285b31; color: #81db82; font-style: normal; }
+    .theme-b .choice { border: 1px solid #375f3d; background: #0d1b10; color: #aaf4a4; font-family: inherit; text-transform: uppercase; }
+    .theme-b .principle { border: 1px solid #313c36; background: rgba(18,25,21,.85); }
+
+    /* Direction C — Moonlit Spirit Network */
+    .theme-c .stage {
+      color: #eef6ff;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(178,221,255,.2), transparent 26%),
+        radial-gradient(circle at 15% 76%, rgba(83,111,207,.24), transparent 34%),
+        linear-gradient(180deg, #071020 0%, #0b1633 55%, #090b1a 100%);
+      font-family: "Palatino Linotype", Palatino, Georgia, serif;
+    }
+    .theme-c .stage::before {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      top: -150px;
+      left: calc(50% - 140px);
+      background: #d9ecff;
+      box-shadow: 0 0 100px rgba(184,224,255,.45);
+      opacity: .72;
+    }
+    .theme-c .stage::after {
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(228,242,255,.65) 0 1px, transparent 1.5px);
+      background-size: 78px 78px;
+      opacity: .19;
+    }
+    .theme-c h1 { font-weight: 400; letter-spacing: -.02em; text-shadow: 0 0 32px rgba(138,194,255,.38); }
+    .theme-c .accent { color: #91d9ff; }
+    .theme-c .board { border: 1px solid rgba(176,218,255,.55); border-radius: 32px 32px 14px 14px; background: linear-gradient(160deg, rgba(23,51,89,.92), rgba(5,15,35,.96)); box-shadow: inset 0 0 70px rgba(78,146,226,.12), 0 30px 90px rgba(0,0,0,.5); }
+    .theme-c .board::after { content: "THE MOON REMEMBERS EVERY VOICE"; position: absolute; left: 0; right: 0; bottom: 17px; text-align: center; color: rgba(192,227,255,.55); letter-spacing: .28em; font-size: 9px; }
+    .theme-c .line { border: 1px solid rgba(160,209,255,.16); background: rgba(10,28,57,.48); border-radius: 50% 50% 12px 12px; }
+    .theme-c .lamp { background: #21365d; color: #93ddff; border: 2px solid #587fb4; }
+    .theme-c .lamp.ringing { background: #d8f5ff; box-shadow: 0 0 28px #6cc9ff; }
+    .theme-c .jack { border: 2px solid #9bc8ed; background: rgba(3,10,25,.72); box-shadow: 0 0 20px rgba(98,185,255,.2); }
+    .theme-c .jack::after { background: #030713; border: 1px solid #a4d4f4; }
+    .theme-c .cord-path { stroke: #c5d6ff; filter: drop-shadow(0 0 7px rgba(123,195,255,.8)); }
+    .theme-c .side-panel { border: 1px solid rgba(172,218,255,.36); border-radius: 18px; color: #e6f4ff; background: rgba(8,22,50,.8); box-shadow: inset 0 0 50px rgba(77,156,233,.1), 0 30px 70px rgba(0,0,0,.4); backdrop-filter: blur(18px); }
+    .theme-c .ticket h2 { font-weight: 400; color: #a9ddff; }
+    .theme-c .transcript { border-top: 1px solid rgba(178,220,255,.22); color: #bfdcf2; }
+    .theme-c .choice { border: 1px solid rgba(167,216,255,.32); border-radius: 999px; background: rgba(114,178,235,.08); color: #e6f4ff; font-family: inherit; text-align: center; }
+    .theme-c .principle { border: 1px solid rgba(167,216,255,.17); border-radius: 12px; background: rgba(11,31,66,.55); }
+
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #030305;
+    }
+    .intro-overlay.playing { display: flex; }
+    .intro-vignette { position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,.92) 88%); }
+    .intro-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(78vw, 980px);
+      height: 2px;
+      transform: translate(-50%,-50%) scaleX(0);
+      background: #e7a847;
+      box-shadow: 0 0 24px #dc842f;
+      animation: introLine 4.8s ease forwards;
+    }
+    .intro-bell {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 4px solid #aa713a;
+      background: #25160b;
+      box-shadow: inset 0 0 0 8px #090604, 0 0 0 0 rgba(240,173,75,.7);
+      animation: introBell 4.8s ease forwards;
+    }
+    .intro-copy { position: relative; text-align: center; z-index: 2; opacity: 0; animation: introCopy 4.8s ease forwards; }
+    .intro-copy span { display: block; color: #d69a49; text-transform: uppercase; letter-spacing: .48em; font: 10px ui-monospace, monospace; margin-bottom: 18px; }
+    .intro-copy strong { display: block; color: #f8ecd4; font: 500 clamp(50px, 9vw, 138px)/.85 Georgia, serif; letter-spacing: -.06em; text-shadow: 0 0 50px rgba(224,145,48,.34); }
+    .intro-copy em { display: block; color: #c8bca8; font: 15px Georgia, serif; margin-top: 24px; letter-spacing: .15em; }
+    .intro-skip { position: absolute; right: 24px; bottom: 24px; z-index: 4; border: 1px solid #745026; color: #dec79f; background: rgba(20,12,7,.7); padding: 10px 14px; cursor: pointer; }
+    @keyframes introLine { 0%,12% { transform: translate(-50%,-50%) scaleX(0); opacity: 0; } 28%,74% { transform: translate(-50%,-50%) scaleX(1); opacity: 1; } 100% { transform: translate(-50%,-50%) scaleX(1.35); opacity: 0; } }
+    @keyframes introBell { 0%,14% { transform: scale(.6); opacity: 0; } 25% { transform: scale(1); opacity: 1; box-shadow: inset 0 0 0 8px #090604, 0 0 0 0 rgba(240,173,75,.7); } 38% { box-shadow: inset 0 0 0 8px #090604, 0 0 0 45px rgba(240,173,75,0); } 68% { transform: scale(1); opacity: 1; } 82%,100% { transform: scale(7); opacity: 0; } }
+    @keyframes introCopy { 0%,34% { opacity: 0; transform: translateY(16px); } 48%,75% { opacity: 1; transform: translateY(0); } 92%,100% { opacity: 0; transform: translateY(-8px); } }
+
+    .haunted .line:nth-child(2), .haunted .line:nth-child(5) { animation: fault .28s steps(2) 4; }
+    .haunted .side-panel { animation: panelFault .75s ease; }
+    @keyframes fault { 0% { transform: translate(0); } 30% { transform: translate(-5px,2px); } 60% { transform: translate(4px,-2px); } 100% { transform: translate(0); } }
+    @keyframes panelFault { 0%,100% { filter: none; } 35% { filter: invert(1) hue-rotate(110deg); } 60% { filter: contrast(1.8); } }
+
+    @media (max-width: 980px) {
+      .decision-bar { position: relative; flex-direction: column; align-items: stretch; }
+      .decision-title { text-align: center; }
+      .switchboard-shell { grid-template-columns: 1fr; }
+      .board-grid { grid-template-columns: repeat(3, 1fr); }
+      .stage-header { grid-template-columns: 1fr; }
+      .stage-status { text-align: left; }
+      .principle-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .stage { padding: 34px 14px 26px; }
+      .board-grid { grid-template-columns: repeat(2, 1fr); padding: 18px; }
+      .principle-strip { grid-template-columns: 1fr; }
+      .direction-picker { display: grid; grid-template-columns: 1fr; }
+      .utility-button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+      .line:hover, .direction-button:hover, .utility-button:hover, .choice:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="decision-bar">
+    <div class="decision-title">
+      <strong>LINE 13</strong>
+      <span>Visual direction room · mockups, not production code</span>
+    </div>
+    <div class="direction-picker" role="group" aria-label="Visual directions">
+      <button class="direction-button" data-direction="a" aria-pressed="true">A · Occult Exchange</button>
+      <button class="direction-button" data-direction="b" aria-pressed="false">B · Analog Bureau</button>
+      <button class="direction-button" data-direction="c" aria-pressed="false">C · Moonlit Network</button>
+    </div>
+    <button class="utility-button" id="playIntro">Replay 4.8-second intro</button>
+  </header>
+
+  <main class="frame" id="frame">
+    <section class="direction theme-a active" data-panel="a">
+      <div class="stage">
+        <div class="stage-header">
+          <div>
+            <div class="eyebrow">Visual direction A · recommended</div>
+            <h1>LINE <span class="accent">13</span></h1>
+            <p class="tagline">Connect the dead before the last line calls you. A resurrected 1930s telephone exchange becomes an occult routing puzzle.</p>
+          </div>
+          <div class="stage-status">Night shift · 03:13<strong class="accent">4 lines waiting</strong></div>
+        </div>
+        <div class="switchboard-shell">
+          <div class="board">
+            <div class="board-grid">
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">Line 01</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Line 02</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">Line 03</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Line 04</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">Line 05</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">Line 13</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Morgue</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Bell Tower</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Orchard</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">East Wing</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Platform 0</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Your Desk</span></div>
+            </div>
+            <svg class="cords" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+              <path class="cord-path" d="M90 170 C 120 330, 450 270, 545 405" />
+              <path class="cord-path" d="M415 170 C 520 230, 690 260, 744 405" />
+              <path class="cord-path" d="M255 170 C 280 260, 140 350, 248 405" />
+            </svg>
+          </div>
+          <aside class="side-panel">
+            <div class="ticket">
+              <h2>Caller 03</h2>
+              <p><strong>Name:</strong> Ruth Bell</p>
+              <p><strong>Departed:</strong> October 31, 1931</p>
+              <p><strong>Clue:</strong> “Where the clock rang after midnight.”</p>
+              <p class="transcript">“Operator... do not place me beside the orchard. Something there has learned my voice.”</p>
+            </div>
+            <div class="choice-row">
+              <button class="choice" data-haunt>Connect to Bell Tower</button>
+              <button class="choice" data-haunt>Hold the line</button>
+              <button class="choice" data-haunt>Sever the circuit</button>
+            </div>
+          </aside>
+        </div>
+        <div class="principle-strip">
+          <div class="principle"><strong>Theme</strong>The obsolete exchange is literally resurrected.</div>
+          <div class="principle"><strong>Mechanic</strong>Every cable changes the story graph.</div>
+          <div class="principle"><strong>Sound</strong>Polly voices pass through Web Audio effects.</div>
+          <div class="principle"><strong>Final reveal</strong>Line 13 originates at the player’s desk.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="direction theme-b" data-panel="b">
+      <div class="stage">
+        <div class="stage-header">
+          <div>
+            <div class="eyebrow">Visual direction B · analog horror</div>
+            <h1>LINE <span class="accent">13</span></h1>
+            <p class="tagline">A government communications bureau closed in 1977. Tonight its dead circuits have resumed taking calls.</p>
+          </div>
+          <div class="stage-status">Case file 13-B<strong class="accent">breach detected</strong></div>
+        </div>
+        <div class="switchboard-shell">
+          <div class="board">
+            <div class="board-grid">
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">A-01</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">A-02</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">B-03</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">B-04</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">C-05</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">13-X</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Archive</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Chamber</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Relay</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Station</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Sublevel</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Operator</span></div>
+            </div>
+            <svg class="cords" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+              <path class="cord-path" d="M90 170 C 160 280, 540 300, 580 405" />
+              <path class="cord-path" d="M415 170 C 500 200, 740 280, 750 405" />
+              <path class="cord-path" d="M255 170 C 280 320, 130 340, 250 405" />
+            </svg>
+          </div>
+          <aside class="side-panel">
+            <div class="ticket">
+              <h2>Incoming transmission</h2>
+              <p>Source: unknown</p>
+              <p>Recorded death: 31-10-1977</p>
+              <p>Routing instruction: chamber beneath the station</p>
+              <p class="transcript">SIGNAL CONTAMINATION AT 63%. THE VOICE NOW KNOWS YOUR EMPLOYEE NUMBER.</p>
+            </div>
+            <div class="choice-row">
+              <button class="choice" data-haunt>Patch sublevel</button>
+              <button class="choice" data-haunt>Quarantine signal</button>
+              <button class="choice" data-haunt>Burn recording</button>
+            </div>
+          </aside>
+        </div>
+        <div class="principle-strip">
+          <div class="principle"><strong>Theme</strong>Institutional analog horror.</div>
+          <div class="principle"><strong>Mechanic</strong>Routing mistakes become containment breaches.</div>
+          <div class="principle"><strong>Sound</strong>Tape hiss, filtered speech and warning tones.</div>
+          <div class="principle"><strong>Final reveal</strong>The bureau never employed the player.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="direction theme-c" data-panel="c">
+      <div class="stage">
+        <div class="stage-header">
+          <div>
+            <div class="eyebrow">Visual direction C · folklore</div>
+            <h1>LINE <span class="accent">13</span></h1>
+            <p class="tagline">Under the thirteenth moon, silver wires carry unfinished stories between those who left and those who still listen.</p>
+          </div>
+          <div class="stage-status">Moon cycle · waning<strong class="accent">the veil is open</strong></div>
+        </div>
+        <div class="switchboard-shell">
+          <div class="board">
+            <div class="board-grid">
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">The Widow</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">The Child</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">The Sailor</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">The Keeper</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">The Twin</span></div>
+              <div class="line"><span class="lamp ringing"></span><span class="jack"></span><span class="line-number">The Unnamed</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Old Well</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Moon Gate</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">White Tree</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">North Sea</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Empty House</span></div>
+              <div class="line"><span class="lamp"></span><span class="jack"></span><span class="line-number">Your Name</span></div>
+            </div>
+            <svg class="cords" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+              <path class="cord-path" d="M90 170 C 150 280, 500 270, 580 405" />
+              <path class="cord-path" d="M415 170 C 520 230, 670 260, 750 405" />
+              <path class="cord-path" d="M255 170 C 280 280, 160 340, 250 405" />
+            </svg>
+          </div>
+          <aside class="side-panel">
+            <div class="ticket">
+              <h2>The sailor is calling</h2>
+              <p>He remembers a white tree reflected in black water.</p>
+              <p>He cannot hear anyone who died beneath a roof.</p>
+              <p class="transcript">“When the silver cord reaches the sea, do not answer the voice that sounds like mine.”</p>
+            </div>
+            <div class="choice-row">
+              <button class="choice" data-haunt>Guide him north</button>
+              <button class="choice" data-haunt>Ask the moon</button>
+              <button class="choice" data-haunt>Cut the silver cord</button>
+            </div>
+          </aside>
+        </div>
+        <div class="principle-strip">
+          <div class="principle"><strong>Theme</strong>A switchboard interpreted as a spirit constellation.</div>
+          <div class="principle"><strong>Mechanic</strong>Cords reveal a moonlit sigil.</div>
+          <div class="principle"><strong>Sound</strong>Whispers, bells and distant water.</div>
+          <div class="principle"><strong>Final reveal</strong>The last destination is the player’s name.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="intro-overlay" id="intro" role="dialog" aria-label="LINE 13 opening sequence" aria-modal="true">
+    <div class="intro-line"></div>
+    <div class="intro-bell"></div>
+    <div class="intro-copy">
+      <span>The exchange closed in 1931</span>
+      <strong>LINE 13</strong>
+      <em>Tonight, it called back.</em>
+    </div>
+    <div class="intro-vignette"></div>
+    <button class="intro-skip" id="skipIntro">Skip intro</button>
+  </div>
+
+  <script>
+    const directionButtons = [...document.querySelectorAll('[data-direction]')];
+    const panels = [...document.querySelectorAll('[data-panel]')];
+    const frame = document.getElementById('frame');
+    const intro = document.getElementById('intro');
+    let introTimer;
+
+    function setDirection(id) {
+      directionButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.direction === id)));
+      panels.forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === id));
+      frame.classList.remove('haunted');
+    }
+
+    function stopIntro() {
+      clearTimeout(introTimer);
+      intro.classList.remove('playing');
+    }
+
+    function playIntro() {
+      stopIntro();
+      void intro.offsetWidth;
+      intro.classList.add('playing');
+      introTimer = setTimeout(stopIntro, 4800);
+    }
+
+    directionButtons.forEach((button) => button.addEventListener('click', () => setDirection(button.dataset.direction)));
+    document.getElementById('playIntro').addEventListener('click', playIntro);
+    document.getElementById('skipIntro').addEventListener('click', stopIntro);
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') stopIntro(); });
+    document.querySelectorAll('[data-haunt]').forEach((button) => {
+      button.addEventListener('click', () => {
+        frame.classList.remove('haunted');
+        void frame.offsetWidth;
+        frame.classList.add('haunted');
+      });
+    });
+  </script>
+</body>
+</html>
