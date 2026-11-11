@@ -63,9 +63,6 @@ jobs:
     timeout-minutes: 15
     container:
       image: mcr.microsoft.com/playwright:v1.65.0-noble
-      # Firefox refuses to start as root when HOME belongs to another user.
-      env:
-        HOME: /root
     strategy:
       fail-fast: false
       matrix:
@@ -85,6 +82,9 @@ jobs:
         run: npm run e2e -w @line-13/web
         env:
           E2E_PROJECT_FILTER: ${{ matrix.browser }}-
+          # Firefox refuses to start as root when HOME belongs to another user, and
+          # Actions sets HOME=/github/home inside containers; a step env wins.
+          HOME: /root
 
       - name: Upload Playwright traces
         if: failure()
