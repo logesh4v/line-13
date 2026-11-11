@@ -25,6 +25,10 @@ const liveUrl = process.env['BASE_URL'];
 const projects = ENGINES.flatMap((engine) =>
   WIDTHS.map(({ width, height }) => ({
     name: `${engine.name}-${width}`,
+    // WebKit on Linux CI costs ~0.4 s per pointer action (the engine, measured
+    // with audio and animation stubbed out), so a two-night test needs more than
+    // 60 s there. Local runs and other engines keep the 60 s budget.
+    ...(process.env['CI'] && engine.name === 'webkit' ? { timeout: 180_000 } : {}),
     use: {
       ...engine.device,
       viewport: { width, height },
