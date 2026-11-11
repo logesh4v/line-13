@@ -54,11 +54,18 @@ jobs:
 
   # Cross-browser E2E: one job per engine, each running that engine at 1440, 820 and
   # 390 (nine projects in total). Axe-core runs on every screen in every project.
-  # Pinned: ubuntu-latest moved to a release whose apt mirrors failed to resolve, so
-  # `playwright install --with-deps` retried until the old 20-minute cap.
+  # The official Playwright image ships the browsers and their system libraries, so
+  # this job never calls apt (`playwright install --with-deps` failed here when the
+  # runner's Ubuntu mirrors stopped resolving). Keep the tag equal to the
+  # @playwright/test version in package-lock.json.
   e2e:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
+      # Firefox refuses to start as root when HOME belongs to another user.
+      env:
+        HOME: /root
     strategy:
       fail-fast: false
       matrix:
@@ -73,10 +80,6 @@ jobs:
 
       - name: Install
         run: npm ci
-
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps ${{ matrix.browser }}
-        working-directory: apps/web
 
       - name: E2E (${{ matrix.browser }} x 1440/820/390, axe-core on every screen)
         run: npm run e2e -w @line-13/web
