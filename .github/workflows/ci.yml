@@ -11,7 +11,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -52,18 +52,39 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Cross-browser E2E: chromium, webkit and firefox at 1440, 820 and 390.
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium webkit firefox
+  # Cross-browser E2E: one job per engine, each running that engine at 1440, 820 and
+  # 390 (nine projects in total). Axe-core runs on every screen in every project.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit, firefox]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
         working-directory: apps/web
 
-      - name: E2E (nine projects, axe-core on every screen)
+      - name: E2E (${{ matrix.browser }} x 1440/820/390, axe-core on every screen)
         run: npm run e2e -w @line-13/web
+        env:
+          E2E_PROJECT_FILTER: ${{ matrix.browser }}-
 
       - name: Upload Playwright traces
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces
+          name: playwright-traces-${{ matrix.browser }}
           path: apps/web/test-results
           if-no-files-found: ignore
