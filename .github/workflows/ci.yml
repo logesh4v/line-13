@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -52,18 +52,52 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Cross-browser E2E: chromium, webkit and firefox at 1440, 820 and 390.
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium webkit firefox
-        working-directory: apps/web
+  # Cross-browser E2E: all nine projects (three engines x 1440/820/390), axe-core on
+  # every screen. Chromium and Firefox run all three widths in one job each. WebKit
+  # on Linux spends ~0.4 s per pointer action (measured with audio and animation
+  # stubbed out, so it is the engine, not the game), so it gets one job per width.
+  # The official Playwright image ships the browsers and their system libraries, so
+  # this job never calls apt (`playwright install --with-deps` failed here when the
+  # runner's Ubuntu mirrors stopped resolving). Keep the tag equal to the
+  # @playwright/test version in package-lock.json.
+  e2e:
+    name: e2e (${{ matrix.name }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: chromium, projects: 'chromium-' }
+          - { name: firefox, projects: 'firefox-' }
+          - { name: webkit-1440, projects: 'webkit-1440' }
+          - { name: webkit-820, projects: 'webkit-820' }
+          - { name: webkit-390, projects: 'webkit-390' }
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: E2E (nine projects, axe-core on every screen)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: E2E (${{ matrix.name }}, axe-core on every screen)
         run: npm run e2e -w @line-13/web
+        env:
+          E2E_PROJECT_FILTER: ${{ matrix.projects }}
+          # Firefox refuses to start as root when HOME belongs to another user, and
+          # Actions sets HOME=/github/home inside containers; a step env wins.
+          HOME: /root
 
       - name: Upload Playwright traces
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces
+          name: playwright-traces-${{ matrix.name }}
           path: apps/web/test-results
           if-no-files-found: ignore

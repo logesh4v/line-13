@@ -15,9 +15,18 @@ import {
 const BLOCKING = ['serious', 'critical'];
 
 async function scan(page: Page, screen: string): Promise<void> {
-  // Let entrance/ending dissolves and sigil strokes settle so contrast is
-  // measured against the final paint, not a mid-fade frame.
-  await page.waitForTimeout(600);
+  // Measure contrast against the final paint, not a mid-fade frame: jump every
+  // one-shot dissolve, sigil stroke and transition to its end state. A fixed
+  // wait was too short on slow CI runners (the ending fades in over 2.4 s).
+  // Looping effects (the ringing pulse) have no end and are left running. The
+  // app has no animationend/transitionend handlers, so this changes paint only.
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      if (animation.effect?.getComputedTiming().iterations !== Infinity) {
+        animation.finish();
+      }
+    }
+  });
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
     .analyze();
