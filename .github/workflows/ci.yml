@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -54,8 +54,10 @@ jobs:
 
   # Cross-browser E2E: one job per engine, each running that engine at 1440, 820 and
   # 390 (nine projects in total). Axe-core runs on every screen in every project.
+  # Pinned: ubuntu-latest moved to a release whose apt mirrors failed to resolve, so
+  # `playwright install --with-deps` retried until the old 20-minute cap.
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
